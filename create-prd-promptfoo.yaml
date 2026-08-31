@@ -1,0 +1,36 @@
+prompts:
+  - id: create-prd
+    raw: |
+      [your RTCC prompt text goes here]
+
+      Product Description:
+      {{product_description}}
+
+# Route llm-rubric grading through the Claude Code CLI — no API key needed
+defaultTest:
+  options:
+    provider: 'exec: node ./claude.js'
+
+providers:
+  - id: 'exec: node ./claude.js'
+    label: sonnet
+    config:
+      model: sonnet
+  - id: 'exec: node ./claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - vars:
+      product_description: |
+        Pomodoro timer with 25-minute work intervals, 5-minute break intervals,
+        audio notifications at each transition, session tracking per day, and a
+        weekly productivity heat map showing sessions completed per day.
+    assert:
+      - type: llm-rubric
+        value: "The PRD contains a Non-Functional Requirements section that addresses timing accuracy with a specific, measurable definition — not just the word 'accurate'."
+      - type: llm-rubric
+        value: "The PRD explicitly declares what is out of scope for V1, naming at least three items a developer might reasonably assume were in scope."
+      - type: llm-rubric
+        value: "The PRD surfaces at least one browser API dependency (such as the Notifications API, AudioContext, or localStorage) with a note about required user permission or browser support."
