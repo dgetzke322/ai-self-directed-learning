@@ -1,10 +1,18 @@
 prompts:
   - id: create-prd
     raw: |
-      [your RTCC prompt text goes here]
+      Role: You are a Product Manager who writes PRDs for engineering-led software teams with expertise in website projects. You use realistic planning.
+
+      Task: Given a product description and requirements, produce a complete Product Requirements Document.
+
+      Context: A web application that can be run locally, pre-compiled and easy to run with a single docker container.
+      The audience for this PRD is a solo developer. Time accuracy is critical. The product must always correct timer drift.
 
       Product Description:
       {{product_description}}
+
+      Additional Requirements:
+      {{additional_requirements}}
 
 # Route llm-rubric grading through the Claude Code CLI — no API key needed
 defaultTest:
@@ -22,15 +30,114 @@ providers:
       model: haiku
 
 tests:
-  - vars:
+  # Test Case 1: Audio and Visual Notifications
+  - description: "Test Case 1: Audio and Visual Notifications Required"
+    vars:
       product_description: |
-        Pomodoro timer with 25-minute work intervals, 5-minute break intervals,
-        audio notifications at each transition, session tracking per day, and a
-        weekly productivity heat map showing sessions completed per day.
+        Pomodoro Timer Web Application. Web application that runs locally,
+        pre-compiled, runs in single Docker container. Must be time accurate
+        and account for drift. Supports light/dark mode. Audience: solo developer.
+      additional_requirements: "Audio and visual notifications are required"
     assert:
       - type: llm-rubric
-        value: "The PRD contains a Non-Functional Requirements section that addresses timing accuracy with a specific, measurable definition — not just the word 'accurate'."
+        value: "The PRD specifies that audio alerts will be used to notify users, and the audio cannot be muted or disabled."
       - type: llm-rubric
-        value: "The PRD explicitly declares what is out of scope for V1, naming at least three items a developer might reasonably assume were in scope."
+        value: "The PRD specifies that the browser tab title will be updated to show notification status, distinct from the default idle state."
       - type: llm-rubric
-        value: "The PRD surfaces at least one browser API dependency (such as the Notifications API, AudioContext, or localStorage) with a note about required user permission or browser support."
+        value: "The PRD does NOT allow users to disable audio notifications completely (audio must not be muted)."
+
+  # Test Case 2: Data Persistence as CSV
+  - description: "Test Case 2: Data Persistence Stored on Server as CSV"
+    vars:
+      product_description: |
+        Pomodoro Timer Web Application. Web application that runs locally,
+        pre-compiled, runs in single Docker container. Must be time accurate
+        and account for drift. Supports light/dark mode. Audience: solo developer.
+      additional_requirements: "Data persistence is stored on server as CSV. Backend stack uses lightweight, commonly-adopted technology (Node.js/Express, Python/Flask, or equivalent). REST API endpoints required. Server-side data validation required."
+    assert:
+      - type: llm-rubric
+        value: "The PRD specifies that application data will be stored on a server, not just in local browser storage."
+      - type: llm-rubric
+        value: "The PRD specifies that data will be stored in or exported as CSV format for easy import/export."
+      - type: llm-rubric
+        value: "The PRD specifies server-side data validation and mentions REST API endpoints for data operations."
+      - type: llm-rubric
+        value: "The PRD does NOT allow for data corruption or permanent data loss scenarios."
+
+  # Test Case 3: Dark Mode Support
+  - description: "Test Case 3: Must Support Dark Mode Browser"
+    vars:
+      product_description: |
+        Pomodoro Timer Web Application. Web application that runs locally,
+        pre-compiled, runs in single Docker container. Must be time accurate
+        and account for drift. Supports light/dark mode. Audience: solo developer.
+      additional_requirements: "Must support dark mode browser display"
+    assert:
+      - type: llm-rubric
+        value: "The PRD specifies support for light mode (regular/default browser colors)."
+      - type: llm-rubric
+        value: "The PRD specifies support for dark mode (dark browser color scheme)."
+      - type: llm-rubric
+        value: "The PRD indicates that users can select or toggle between light and dark modes."
+      - type: llm-rubric
+        value: "The PRD does NOT indicate that the application would lack support for either light or dark mode selection."
+
+  # Test Case 4: Security Compliance with CIS Controls
+  - description: "Test Case 4: Focus on Security Compliance (CIS Controls)"
+    vars:
+      product_description: |
+        Pomodoro Timer Web Application. Web application that runs locally,
+        pre-compiled, runs in single Docker container. Must be time accurate
+        and account for drift. Supports light/dark mode. Audience: solo developer.
+      additional_requirements: "Focus on security compliance. Local user authentication must follow OWASP standards (bcrypt, argon2, PBKDF2). Passwords 12+ characters minimum. Session tokens with HTTPOnly/Secure flags. Rate limiting on login attempts. CIS Controls alignment required (Controls 3, 5, 6)."
+    assert:
+      - type: llm-rubric
+        value: "The PRD mentions using industry-standard password hashing algorithms (bcrypt, argon2, or PBKDF2) — NOT plaintext or weak hashing."
+      - type: llm-rubric
+        value: "The PRD specifies minimum password complexity requirements (12+ characters recommended)."
+      - type: llm-rubric
+        value: "The PRD mentions secure session management with HTTPOnly and Secure flags for session tokens."
+      - type: llm-rubric
+        value: "The PRD specifies rate limiting on authentication attempts to prevent brute force attacks."
+      - type: llm-rubric
+        value: "The PRD references CIS Controls alignment (specifically Controls 3, 5, or 6) for data protection and account management."
+      - type: llm-rubric
+        value: "The PRD does NOT allow hardcoded credentials or default passwords to be present in the application."
+
+  # Test Case 5: Timer Drift Correction
+  - description: "Test Case 5: Timer Drift Correction Requirement (±100ms threshold)"
+    vars:
+      product_description: |
+        Pomodoro Timer Web Application. Web application that runs locally,
+        pre-compiled, runs in single Docker container. Must be time accurate
+        and account for drift. Supports light/dark mode. Audience: solo developer.
+      additional_requirements: "When the application runs, it must account for timing drift when tracking intervals. Timer must not deviate more than ±100ms before automatic correction is triggered."
+    assert:
+      - type: llm-rubric
+        value: "The PRD specifies that drift is constantly being monitored in the code."
+      - type: llm-rubric
+        value: "The PRD specifies that when drift exceeds ±100ms, automatic correction is triggered."
+      - type: llm-rubric
+        value: "The PRD specifies that drift events and corrections are reported or logged."
+      - type: llm-rubric
+        value: "The PRD clearly defines ±100ms as the maximum acceptable deviation threshold, not as a failure criterion."
+      - type: llm-rubric
+        value: "The PRD does NOT indicate that timer drift cannot be detected or corrected."
+
+  # Test Case 6: Note Taking Feature
+  - description: "Test Case 6: Note Taking Section for Progress Documentation"
+    vars:
+      product_description: |
+        Pomodoro Timer Web Application. Web application that runs locally,
+        pre-compiled, runs in single Docker container. Must be time accurate
+        and account for drift. Supports light/dark mode. Audience: solo developer.
+      additional_requirements: "Must have a section for note taking to document progress on each task. Notes should be stored in the CSV data file."
+    assert:
+      - type: llm-rubric
+        value: "The PRD specifies a note-taking feature or section as part of the application."
+      - type: llm-rubric
+        value: "The PRD specifies that notes are stored in the CSV data file for persistence and export."
+      - type: llm-rubric
+        value: "The PRD indicates that users can document progress on each task through the note-taking section."
+      - type: llm-rubric
+        value: "The PRD does NOT require notes to be mandatory before proceeding to the next task (optional feature)."
