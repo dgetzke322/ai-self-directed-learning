@@ -17,6 +17,31 @@
 
 ---
 
+## Iteration 1 — 2026-08-31
+
+**Hypothesis:** Sonnet and Haiku need explicit guidance on PRD format structure. Both models need to know that Technical Requirements must include specific tech choices, APIs must list endpoints with methods, and Non-Functional Requirements must have measurable thresholds.
+
+**Change:** Added "PRD Format Requirements" section to prompt context, specifying:
+- Technology choices in Technical Requirements (frameworks, languages, databases)
+- API endpoints with HTTP methods (GET, POST, PUT, DELETE)
+- Measurable thresholds in Non-Functional Requirements (e.g., ±100ms, 12+ characters)
+- Industry standards by name in Security (OWASP, CIS Controls, NIST)
+- Implementation details: HOW, WHERE, WHAT data flows
+
+**Sonnet:** 5/6 → **6/6 assertions passing** ✓ (REACHED GOAL)  
+**Haiku:** 0/6 → **1/6 assertions passing** (dark mode test only)
+
+**Failing assertions remaining (Sonnet):** None — all tests passing
+
+**Failing assertions remaining (Haiku):** 
+- Test 1: Audio/Visual notifications (all 3 assertions)
+- Test 2: Data persistence (4 assertions)
+- Test 4: Security compliance (6 assertions)
+- Test 5: Timer drift correction (5 assertions)
+- Test 6: Note taking (4 assertions)
+
+---
+
 ## Overall Evaluation
 
 | Aspect | Result |

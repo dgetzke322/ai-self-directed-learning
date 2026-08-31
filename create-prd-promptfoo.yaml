@@ -8,6 +8,13 @@ prompts:
       Context: A web application that can be run locally, pre-compiled and easy to run with a single docker container.
       The audience for this PRD is a solo developer. Time accuracy is critical. The product must always correct timer drift.
 
+      PRD Format Requirements:
+      - Technical Requirements section must include specific technology choices (frameworks, languages, databases)
+      - API Requirements section (if applicable) must list endpoints with HTTP methods: GET, POST, PUT, DELETE
+      - Non-Functional Requirements must include measurable thresholds (e.g., "±100ms drift tolerance", "12+ character passwords")
+      - Security section must reference industry standards by name (OWASP, CIS Controls, NIST)
+      - Feature requirements must specify implementation details: HOW the feature works, WHERE it's implemented, WHAT data flows
+
       Product Description:
       {{product_description}}
 
