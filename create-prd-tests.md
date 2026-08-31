@@ -42,6 +42,22 @@
 
 ---
 
+## Green State (Sonnet) — 2026-08-31
+
+**Sonnet score:** 6/6 assertions passing ✓  
+**Haiku score:** 1/6 assertions passing  
+**Model Ladder delta at Green:** 5 assertions (Sonnet 6/6 - Haiku 1/6)  
+**Iterations from baseline:** 1
+
+**Baseline → Green progression:**
+- Baseline: Sonnet 5/6, Haiku 0/6 (Delta: 5)
+- Iteration 1: Sonnet 6/6, Haiku 1/6 (Delta: 5)
+- **Result:** All Sonnet assertions passing. Ready to iterate on Haiku.
+
+**Stable prompt state:** PRD Format Requirements added to Context section, specifying tech choices, API endpoints with methods, measurable thresholds, industry standard references, and implementation details (HOW/WHERE/WHAT).
+
+---
+
 ## Overall Evaluation
 
 | Aspect | Result |
