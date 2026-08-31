@@ -1,5 +1,22 @@
 # PRD Test Results Summary
 
+## Promptfoo Baseline Run — 2026-08-31
+
+**Sonnet score:** 5/6 test cases passing (83.3%)  
+**Haiku score:** 0/6 test cases passing (0%)  
+**Model Ladder delta:** 5 - 0 = **5 test cases** difference  
+**Config:** create-prd-promptfoo.yaml  
+**Total assertions:** 26 across all test cases  
+**Run results:** 5 passed, 7 failed (58.33% failure rate)
+
+### Key Findings from Baseline:
+- **Sonnet** successfully passes data persistence, dark mode, security, drift correction, and note-taking tests
+- **Sonnet** fails on audio/visual notifications (likely assertion wording needs refinement)
+- **Haiku** requires prompt tuning or assertion refinement for all test cases
+- Model performance delta indicates Sonnet's superior PRD generation for this complex task
+
+---
+
 ## Overall Evaluation
 
 | Aspect | Result |
