@@ -1,0 +1,49 @@
+What sections would a skilled Product Manager always include in a PRD that a developer needs before beginning implementation? 
+Think beyond the feature list: non-functional requirements, success criteria, explicit out-of-scope items, and open questions.
+
+Product Overview: What the product is and its purpose.
+Goals and Objectives: What problem the product solves.
+User Stories: How users will interact with the product.
+Functional Requirements: Features and behaviors the product must have.
+Non-Functional Requirements: Performance, reliability, security, accessibility, and usability requirements.
+Success Metrics: How success will be measured.
+Constraints and Assumptions: Technical or business limitations.
+
+
+
+What implied technical requirements exist in this product description that are not stated explicitly? 
+The description says "accurate timing" — but setInterval in JavaScript drifts over time. 
+Does a 25-minute timer that ends at 25:03 meet the product requirement? Who decides?
+
+It does not matter when the timer ends on the real world clock, it just needs to be accurate at tracking 25 mins from the start of the app.
+it should also be aware of when you forget to turn it off or stop a sections
+it should be light weight
+it should track metrics in a csv file for easy import and export
+
+
+
+What does "weekly productivity heat map" mean specifically enough to implement? Is this client-side only? 
+Does it survive a browser restart? What data gets stored, and where?
+
+the heat map tracks your sessions by day over the course of a week and then summerizes by week. 
+it gets stored server side in the csv file. It will survive the restart because it is stored on the server
+
+
+
+What does a developer need to know about browser API dependencies that this description implies but does not name? 
+(Hint: audio notifications at break transitions, visual notifications, potential background tab behavior.)
+
+There should be an audio and visual feedback component
+it should still remain active when in a different tab
+
+
+
+What would a developer ask about during sprint planning that the bare product description leaves unanswered?
+
+They would ask about which technologies to use
+They would ask about what the theme for the website should be
+They would ask about what the deployment strategy is for ci/cd
+They would ask about which automatic testing tools will be used 
+They would ask about which security vulnerability tracking tools will be used
+
+
