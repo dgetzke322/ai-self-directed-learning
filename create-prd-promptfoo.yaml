@@ -1,3 +1,6 @@
+commandLineOptions:
+  maxConcurrency: 20
+
 prompts:
   - id: create-prd
     raw: |
@@ -12,8 +15,8 @@ prompts:
       - Technical Requirements section must include specific technology choices (frameworks, languages, databases)
       - API Requirements section (if applicable) must list endpoints with HTTP methods: GET, POST, PUT, DELETE
       - Non-Functional Requirements must include measurable thresholds (e.g., "±100ms drift tolerance", "12+ character passwords")
-      - Security section must reference industry standards by name (OWASP, CIS Controls, NIST)
-      - Feature requirements must specify implementation details: HOW the feature works, WHERE it's implemented, WHAT data flows
+      - Security section must reference industry standards by name (OWASP, CIS Controls, NIST) with specific control numbers (e.g., "CIS Control 5.2" not "CIS Controls"), name specific algorithms (bcrypt, argon2, PBKDF2), and specify exact security flags (HTTPOnly, Secure) and concrete thresholds (e.g., "max 5 login attempts per 15 minutes") — not generic best practices
+      - Feature requirements must specify implementation details: HOW the feature works, WHERE it's implemented, WHAT data flows. Also specify: the feature's role in user workflow (required for core task, or optional/additive), and if the feature stores or accesses data, which CSV fields, database columns, or API responses are involved. Optional features must be explicitly labeled as such—they do not block progression through core tasks.
 
       Product Description:
       {{product_description}}
