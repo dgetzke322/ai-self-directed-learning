@@ -1,0 +1,55 @@
+prompts:
+  - id: create-prd-teampulse
+    raw: |
+      Role: You are a Product Manager who writes PRDs for engineering-led software teams with expertise in website projects. You use realistic planning. Your PRDs are known for technical specificity and clear implementation boundaries.
+
+      Task: Given a product description and requirements, produce a complete, implementation-ready Product Requirements Document.
+
+      Context: A web application that can be run locally, pre-compiled and easy to run with a single docker container. The audience for this PRD is a solo developer. Time accuracy is critical. The product must always correct timer drift.
+
+      Timing & Drift Requirements:
+      When the PRD involves time-critical operations (timers, intervals, drift correction), create a dedicated "Timing & Drift" Non-Functional Requirements section that includes:
+      1. Drift Tolerance Specification — exact numeric threshold
+      2. Drift Detection — HOW is drift monitored
+      3. Drift Correction Trigger — WHEN correction activates
+      4. Correction Mechanism — WHAT correction does
+      5. Drift Reporting — HOW deviations are logged
+
+      PRD Format Requirements:
+      - Technical Requirements section must include specific technology choices (frameworks, languages, databases)
+      - API Requirements section (if applicable) must list endpoints with HTTP methods: GET, POST, PUT, DELETE
+      - Non-Functional Requirements must include measurable thresholds (e.g., "±100ms drift tolerance", "12+ character passwords")
+      - Security section must reference industry standards by name (OWASP, CIS Controls, NIST) with specific control numbers (e.g., "CIS Control 5.2" not "CIS Controls"), name specific algorithms (bcrypt, argon2, PBKDF2), and specify exact security flags (HTTPOnly, Secure) and concrete thresholds (e.g., "max 5 login attempts per 15 minutes") — not generic best practices
+      - Feature requirements must specify implementation details: HOW the feature works, WHERE it's implemented, WHAT data flows. Also specify: the feature's role in user workflow (required for core task, or optional/additive), and if the feature stores or accesses data, which CSV fields, database columns, or API responses are involved. Optional features must be explicitly labeled as such—they do not block progression through core tasks.
+
+      Product Description:
+      {{product_description}}
+
+defaultTest:
+  options:
+    provider: 'exec: node ./claude.js'
+
+providers:
+  - id: 'exec: node ./claude.js'
+    label: sonnet
+    config:
+      model: sonnet
+
+tests:
+  - description: "TeamPulse: Team Health Check System"
+    vars:
+      product_description: |
+        Build a lightweight team health check system that allows engineering managers to run anonymous, recurring pulse surveys with their teams. Engineers answer 5–7 questions on a weekly or bi-weekly schedule. Results are aggregated and displayed in a trend dashboard visible only to the manager. Individual responses remain anonymous — managers see team-level patterns, not individual attributions.
+
+        Key requirements:
+        - Engineers receive a notification (email or Slack) with a link to a brief survey form
+        - Survey form is mobile-accessible and completable in under 3 minutes
+        - Managers have a dashboard showing trend lines over time for each question, with comparisons to prior periods
+        - All responses are stored anonymously — no individual attribution in any view, including admin views
+        - Managers can configure: question set, frequency (weekly/bi-weekly), and team membership
+        - The system supports multiple managers with separate teams; no cross-team visibility
+
+        Technical context: React frontend, Node.js backend, PostgreSQL database, GitHub for version control, Jira for issue tracking, Entra ID / OIDC SSO authentication.
+
+        Out of scope for V1: ML-based sentiment analysis, comparison across teams, integration with HR systems, mobile native apps.
+    assert: []
