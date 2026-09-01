@@ -1,0 +1,169 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: create-prd-teampulse
+    raw: |
+      Role: You are a Product Manager who writes PRDs for engineering-led software teams with expertise in website projects. You use realistic planning. Your PRDs are known for technical specificity and clear implementation boundaries.
+
+      Task: Given a product description and requirements, produce a complete, implementation-ready Product Requirements Document.
+
+      Context: The product is a web application that can be deployed in containerized environments. Evaluate the product description to determine if timing accuracy is critical; if it is, the product must always correct timer drift.
+
+      Scope Boundary Extraction:
+      The product description may include explicit out-of-scope items for V1. Your PRD must include an "Out of Scope (V1)" section that:
+      1. Extracts each out-of-scope item mentioned in the product description by name
+      2. Explains why it's deferred (complexity, timing, priority, dependencies)
+      3. Specifies when it might move in-scope (Phase 2, if product gains traction, if customer requests, etc.)
+      Example: If the product description says "Out of scope: ML-based sentiment analysis, HR system integration (Workday)", your PRD's Out-of-Scope section must name BOTH items specifically and explain why each is deferred.
+      Do NOT use generic statements like "Advanced features deferred to V2". Name each out-of-scope item explicitly.
+
+      Timing & Drift Requirements:
+      When the PRD involves time-critical operations (timers, intervals, drift correction), create a dedicated "Timing & Drift" Non-Functional Requirements section that includes:
+      1. Drift Tolerance Specification — exact numeric threshold
+      2. Drift Detection — HOW is drift monitored
+      3. Drift Correction Trigger — WHEN correction activates
+      4. Correction Mechanism — WHAT correction does
+      5. Drift Reporting — HOW deviations are logged
+
+      PRD Format Requirements:
+      - Technical Requirements section must include specific technology choices (frameworks, languages, databases)
+      - API Requirements section (if applicable) must list endpoints with HTTP methods: GET, POST, PUT, DELETE
+      - Non-Functional Requirements must include measurable thresholds (e.g., "±100ms drift tolerance", "12+ character passwords")
+      - Security section must reference industry standards by name (OWASP, CIS Controls, NIST) with specific control numbers (e.g., "CIS Control 5.2" not "CIS Controls"), name specific algorithms (bcrypt, argon2, PBKDF2), and specify exact security flags (HTTPOnly, Secure) and concrete thresholds (e.g., "max 5 login attempts per 15 minutes") — not generic best practices
+      - Feature requirements must specify implementation details: HOW the feature works, WHERE it's implemented, WHAT data flows. Also specify: the feature's role in user workflow (required for core task, or optional/additive), and if the feature stores or accesses data, which CSV fields, database columns, or API responses are involved. Optional features must be explicitly labeled as such—they do not block progression through core tasks.
+      - Data Retention & Compliance (if the product stores user data): Specify retention duration (not "indefinite" without policy), deletion mechanism, GDPR/employee-departure handling, cascade behavior when parent records are deleted, and that all deletions are audit-logged.
+
+      Product Description:
+      {{product_description}}
+
+defaultTest:
+  options:
+    provider: 'exec: node ./claude.js'
+
+providers:
+  - id: 'exec: node ./claude.js'
+    label: sonnet
+    config:
+      model: sonnet
+  - id: 'exec: node ./claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  # Test Case 1: Anonymous Data Handling — Operational Definition
+  - description: "Test 1: Anonymous Data Handling — Operational Definition"
+    vars:
+      product_description: |
+        Build a lightweight team health check system that allows engineering managers to run anonymous, recurring pulse surveys with their teams. Engineers answer 5–7 questions on a weekly or bi-weekly schedule. Results are aggregated and displayed in a trend dashboard visible only to the manager. Individual responses remain anonymous — managers see team-level patterns, not individual attributions.
+
+        Key requirements:
+        - Engineers receive a notification (email or Slack) with a link to a brief survey form
+        - Survey form is mobile-accessible and completable in under 3 minutes
+        - Managers have a dashboard showing trend lines over time for each question, with comparisons to prior periods
+        - All responses are stored anonymously — no individual attribution in any view, including admin views
+        - Managers can configure: question set, frequency (weekly/bi-weekly), and team membership
+        - The system supports multiple managers with separate teams; no cross-team visibility
+
+        Technical context: React frontend, Node.js backend, PostgreSQL database, GitHub for version control, Jira for issue tracking, Entra ID / OIDC SSO authentication.
+
+        Out of scope for V1: ML-based sentiment analysis, comparison across teams, integration with HR systems, mobile native apps.
+    assert:
+      - type: llm-rubric
+        value: "The PRD specifies that the responses table or data model has NO foreign key, column, or indexed path that references individual team members or identifying information. Responses cannot be joined back to an individual by ID."
+      - type: llm-rubric
+        value: "The PRD specifies a minimum threshold guard: if fewer than N responses are submitted (N must be a specific number, e.g., 4), the aggregate score is not displayed to the manager, preventing reverse-engineering of individual answers on small teams."
+      - type: llm-rubric
+        value: "The PRD explicitly states that anonymity is guaranteed not just in the dashboard but in ALL views including database dumps, admin views, CSV exports, and backup scenarios."
+      - type: llm-rubric
+        value: "The PRD explains the separation between the token/mechanism for preventing duplicate submissions (e.g., member_id_hash) and the response data, making clear they are never joined in aggregation queries."
+
+  # Test Case 2: Multi-Role Requirements — Distinct Access Scopes
+  - description: "Test 2: Multi-Role Requirements — Engineer vs Manager Access Scopes"
+    vars:
+      product_description: |
+        Build a lightweight team health check system that allows engineering managers to run anonymous, recurring pulse surveys with their teams. Engineers answer 5–7 questions on a weekly or bi-weekly schedule. Results are aggregated and displayed in a trend dashboard visible only to the manager. Individual responses remain anonymous — managers see team-level patterns, not individual attributions.
+
+        Key requirements:
+        - Engineers receive a notification (email or Slack) with a link to a brief survey form
+        - Survey form is mobile-accessible and completable in under 3 minutes
+        - Managers have a dashboard showing trend lines over time for each question, with comparisons to prior periods
+        - All responses are stored anonymously — no individual attribution in any view, including admin views
+        - Managers can configure: question set, frequency (weekly/bi-weekly), and team membership
+        - The system supports multiple managers with separate teams; no cross-team visibility
+        - Engineers and managers have completely different access patterns: engineers only answer surveys; managers configure and view results.
+
+        Technical context: React frontend, Node.js backend, PostgreSQL database, GitHub for version control, Jira for issue tracking, Entra ID / OIDC SSO authentication.
+
+        Out of scope for V1: ML-based sentiment analysis, comparison across teams, integration with HR systems, mobile native apps.
+    assert:
+      - type: llm-rubric
+        value: "The PRD includes a Personas section or equivalent that explicitly describes two distinct user roles: Manager (configures surveys, views dashboard, manages team members) and Engineer (receives link, completes survey, no account required)."
+      - type: llm-rubric
+        value: "The API Requirements section clearly indicates which endpoints are for managers only (e.g., dashboard, config, team management) vs. engineers only (e.g., survey form submission via token), making the role distinction explicit in the API design."
+      - type: llm-rubric
+        value: "The PRD specifies that managers authenticate via session-based login (OIDC) and engineers authenticate via single-use token, explaining WHY they differ (token is stateless; engineer has no account)."
+      - type: llm-rubric
+        value: "The PRD explicitly states data access rules: managers see only aggregated data (never individual responses); engineers see only their own survey form and cannot see results or other engineers' responses."
+      - type: llm-rubric
+        value: "The PRD explicitly states that the dashboard is manager-only and engineers cannot log in or view any dashboard. This is not buried in descriptions; it is clear and explicit."
+
+  # Test Case 3: Scope Specificity — Four Named Out-of-Scope Items
+  - description: "Test 3: Scope Specificity — Four Named Out-of-Scope Items"
+    vars:
+      product_description: |
+        Build a lightweight team health check system that allows engineering managers to run anonymous, recurring pulse surveys with their teams. Engineers answer 5–7 questions on a weekly or bi-weekly schedule. Results are aggregated and displayed in a trend dashboard visible only to the manager. Individual responses remain anonymous — managers see team-level patterns, not individual attributions.
+
+        Key requirements:
+        - Engineers receive a notification (email or Slack) with a link to a brief survey form
+        - Survey form is mobile-accessible and completable in under 3 minutes
+        - Managers have a dashboard showing trend lines over time for each question, with comparisons to prior periods
+        - All responses are stored anonymously — no individual attribution in any view, including admin views
+        - Managers can configure: question set, frequency (weekly/bi-weekly), and team membership
+        - The system supports multiple managers with separate teams; no cross-team visibility
+
+        Technical context: React frontend, Node.js backend, PostgreSQL database, GitHub for version control, Jira for issue tracking, Entra ID / OIDC SSO authentication.
+
+        Out of scope for V1: ML-based sentiment analysis, comparison across teams, integration with HR systems, mobile native apps.
+    assert:
+      - type: llm-rubric
+        value: "The PRD includes an 'Out of Scope (V1)' section that explicitly names 'ML-based sentiment analysis' or equivalent phrasing about no NLP scoring for free-text responses."
+      - type: llm-rubric
+        value: "The PRD's Out-of-Scope section explicitly names 'cross-team comparison' or 'org-wide rollups' as out of scope for V1."
+      - type: llm-rubric
+        value: "The PRD's Out-of-Scope section explicitly names 'HR system integration' and specifically mentions vendors like Workday or BambooHR, or equivalent phrasing about no ERP/HRIS connectivity in V1."
+      - type: llm-rubric
+        value: "The PRD's Out-of-Scope section explicitly states 'native mobile apps' are out of scope, with explicit mention that V1 supports 'mobile web only' (responsive browser access)."
+
+  # Test Case 4: Data Retention & Purging Policy — Enterprise Compliance
+  - description: "Test 4: Data Retention & Purging Policy — Enterprise Compliance"
+    vars:
+      product_description: |
+        Build a lightweight team health check system that allows engineering managers to run anonymous, recurring pulse surveys with their teams. Engineers answer 5–7 questions on a weekly or bi-weekly schedule. Results are aggregated and displayed in a trend dashboard visible only to the manager. Individual responses remain anonymous — managers see team-level patterns, not individual attributions.
+
+        Key requirements:
+        - Engineers receive a notification (email or Slack) with a link to a brief survey form
+        - Survey form is mobile-accessible and completable in under 3 minutes
+        - Managers have a dashboard showing trend lines over time for each question, with comparisons to prior periods
+        - All responses are stored anonymously — no individual attribution in any view, including admin views
+        - Managers can configure: question set, frequency (weekly/bi-weekly), and team membership
+        - The system supports multiple managers with separate teams; no cross-team visibility
+        - The system is deployed in an enterprise environment. Managers may want to archive old surveys. Employees who leave may request data deletion. Compliance with GDPR and data minimization is important.
+
+        Technical context: React frontend, Node.js backend, PostgreSQL database, GitHub for version control, Jira for issue tracking, Entra ID / OIDC SSO authentication.
+
+        Out of scope for V1: ML-based sentiment analysis, comparison across teams, integration with HR systems, mobile native apps.
+    assert:
+      - type: llm-rubric
+        value: "The PRD specifies a retention period for survey responses (e.g., 'retained for 90 days', 'retained for 2 years', or 'indefinitely with configurable purge policy'). A specific timeframe or policy must be stated, not 'eventually' or 'as needed'."
+      - type: llm-rubric
+        value: "The PRD specifies what happens when a team is archived: are responses deleted immediately, retained for a grace period, or archived indefinitely? The cascade behavior must be explicit."
+      - type: llm-rubric
+        value: "The PRD addresses employee departure and GDPR right-to-be-forgotten: when an employee is removed from a team or requests deletion, the PRD specifies whether their responses are deleted immediately, deleted after a grace period, or anonymized/disassociated."
+      - type: llm-rubric
+        value: "The PRD specifies that data deletion and purging events are logged with audit trail (who initiated, when, what was deleted), enabling compliance teams to prove data was destroyed."
+      - type: llm-rubric
+        value: "The PRD specifies the cascade behavior for deletes: when a team is deleted, what happens to survey configs, survey instances, and responses? All must be explicit (deleted, archived, soft-deleted, etc.)."
+      - type: llm-rubric
+        value: "The PRD either specifies an admin API for manual deletion (e.g., DELETE /api/admin/survey/:instanceId with audit logging) or explains how compliance teams delete data when required by policy or law."

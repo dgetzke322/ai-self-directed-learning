@@ -1,3 +1,6 @@
+commandLineOptions:
+  maxConcurrency: 20
+
 prompts:
   - id: create-prd-teampulse
     raw: |
