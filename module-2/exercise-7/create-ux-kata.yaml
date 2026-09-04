@@ -1,0 +1,84 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: create-ux-kata
+    raw: |
+      # Create UX
+
+      ## Role
+      You are a Senior UX Designer who produces clear, developer-ready UX specifications.
+
+      ## Task
+      Given a PRD, produce a UX Specification describing the user interface and interaction flows for the described feature or system.
+
+      ## Context
+      Tic-Tac-Toe has three distinct play modes with very different interaction models:
+      1. **Player vs. Player:** Turn-based, both players human, local or remote
+      2. **Easy AI:** Player vs. computer with random move selection (simple opponent)
+      3. **Impossible AI:** Player vs. computer with minimax algorithm. This is the complex UX challenge—must visualize move evaluation scores so players understand why the AI chose its move.
+
+      ## Constraints
+      UX specification MUST address each mode separately with:
+      - **Mode-Specific Flows:** Do NOT treat all three modes as variants of the same interface. Each mode needs explicit, separate interaction flow documentation.
+      - **Minimax Visualization (Critical):** For Impossible AI mode, explicitly describe how move evaluation scores are displayed on the board. This is the differentiating UX feature. Describe:
+        * How/where scores appear (overlaid on squares? tooltip? legend?)
+        * What the numbers/colors mean (positive = good for AI, negative = bad for AI, zero = draw)
+        * When visualization updates (before move? after?)
+        * Example: "Each legal square shows a numeric score (e.g., 10 for winning, 0 for draw, -5 for losing move). Player can hover to see score tooltips."
+      - **State Handling:** Win/draw/invalid move states for each mode
+      - **Component Inventory:** Mode selector, board grid, score visualization overlay, result display
+
+      ## Product Requirements Document
+      {{prd_input}}
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "Tic-Tac-Toe with Unbeatable AI — Mode-Specific Flows + Minimax Visualization"
+    vars:
+      prd_input: |
+        # Tic-Tac-Toe with Unbeatable AI
+
+        ## Overview
+        Classic 3x3 Tic-Tac-Toe with three distinct play modes:
+        1. **Player vs Player:** Two humans alternate X/O on same board
+        2. **Easy AI:** Human player vs. computer that makes random valid moves
+        3. **Impossible AI:** Human player vs. computer using minimax algorithm—always wins or draws. Move evaluation visualization shows minimax scores for each legal square.
+
+        ## Board Mechanics
+        - 3x3 grid (9 squares)
+        - Players click empty square to place mark (X or O)
+        - Win: 3 in a row (horizontal, vertical, diagonal)
+        - Draw: All squares filled, no winner
+        - Invalid: Clicking occupied square is prevented
+
+        ## AI Modes
+
+        ### Easy AI
+        Computer makes random valid move after player move.
+
+        ### Impossible AI (Minimax with Visualization)
+        Computer uses minimax algorithm to play optimally. Critical UX requirement: Show move evaluation scores on the board so player understands the AI's decision-making.
+
+        Visualization example options:
+        - Numeric scores on each legal square (8 = winning move, 0 = draw, -1 = losing move)
+        - Color overlay (green = good for AI, yellow = neutral, red = bad for AI)
+        - Tooltip on hover showing score and reason ("This move blocks your win")
+
+        The spec should make clear HOW and WHERE the scores appear and WHAT they mean.
+
+        ## Non-Functional Requirements
+        - Responsive (desktop and mobile)
+        - Move calculation <1 second
+        - Smooth board updates
+        - Mobile: Touch-friendly click targets (≥44px)
+    assert: []

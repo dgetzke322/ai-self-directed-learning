@@ -1,0 +1,261 @@
+{
+  "evalId": "eval-cFU-2026-09-04T17:01:05",
+  "results": {
+    "version": 3,
+    "timestamp": "2026-09-04T17:01:05.761Z",
+    "prompts": [
+      {
+        "id": "7850d2381f71fba24174bbb74614d24b0ea48b863f7fe7dff1f9589e9f35c8a7",
+        "raw": "# Create UX\n\n## Role\nYou are a Senior UX Designer who produces clear, developer-ready UX specifications.\n\n## Task\nGiven a PRD, produce a UX Specification describing the user interface and interaction flows for the described feature or system.\n\n## Context\nTeamPulse serves two distinct user types:\n- **Engineering Managers:** Non-technical HR/operations role. Need intuitive configuration UI for survey setup, scheduling, team management. Expect guided workflows.\n- **Engineers:** Technical users who receive surveys via email. Minimal UI, mobile-first, fast completion (under 3 minutes). One-time link driven.\n\nPlatform: Web application, mobile-accessible (responsive design required).\nTechnical sophistication: Managers expect visual configuration; engineers expect instant, distraction-free experience.\n\n## Constraints\nUX specification must include:\n- **Component Inventory:** Every UI element (buttons, forms, tables, modals, fields) with clear description and purpose\n- **Interaction Flows:** Separate, detailed flows for each user type (manager and engineer). Each flow shows step-by-step user actions and system responses.\n- **State Handling:** Explicit documentation of all states—error states (validation failures, expired links, closed surveys), empty states (no teams, no surveys, no results), loading states (form loading, results computing)\n- **Accessibility Notes:** Mobile layout specifics (vertical stacking, 375px viewport), touch target sizes (≥44px), keyboard navigation, ARIA labels, color contrast\n- **Format Specificity:** ASCII mockups or wireframe descriptions showing layout; button states (default, hover, disabled, loading, success); input validation rules (required fields, character limits, allowed characters); specific error messages (not \"error\" but actual copy)\n\nMobile accessibility critical: Survey form must load in <1.5s on 4G, be completable in under 3 minutes, with clear navigation and no external distractions.\n\n## Product Requirements Document\n{{prd_input}}\n",
+        "label": "# Create UX\n\n## Role\nYou are a Senior UX Designer who produces clear, developer-ready UX specifications.\n\n## Task\nGiven a PRD, produce a UX Specification describing the user interface and interaction flows for the described feature or system.\n\n## Context\nTeamPulse serves two distinct user types:\n- **Engineering Managers:** Non-technical HR/operations role. Need intuitive configuration UI for survey setup, scheduling, team management. Expect guided workflows.\n- **Engineers:** Technical users who receive surveys via email. Minimal UI, mobile-first, fast completion (under 3 minutes). One-time link driven.\n\nPlatform: Web application, mobile-accessible (responsive design required).\nTechnical sophistication: Managers expect visual configuration; engineers expect instant, distraction-free experience.\n\n## Constraints\nUX specification must include:\n- **Component Inventory:** Every UI element (buttons, forms, tables, modals, fields) with clear description and purpose\n- **Interaction Flows:** Separate, detailed flows for each user type (manager and engineer). Each flow shows step-by-step user actions and system responses.\n- **State Handling:** Explicit documentation of all states—error states (validation failures, expired links, closed surveys), empty states (no teams, no surveys, no results), loading states (form loading, results computing)\n- **Accessibility Notes:** Mobile layout specifics (vertical stacking, 375px viewport), touch target sizes (≥44px), keyboard navigation, ARIA labels, color contrast\n- **Format Specificity:** ASCII mockups or wireframe descriptions showing layout; button states (default, hover, disabled, loading, success); input validation rules (required fields, character limits, allowed characters); specific error messages (not \"error\" but actual copy)\n\nMobile accessibility critical: Survey form must load in <1.5s on 4G, be completable in under 3 minutes, with clear navigation and no external distractions.\n\n## Product Requirements Document\n{{prd_input}}\n",
+        "provider": "haiku",
+        "metrics": {
+          "score": 1,
+          "testPassCount": 1,
+          "testFailCount": 0,
+          "testErrorCount": 0,
+          "assertPassCount": 0,
+          "assertFailCount": 0,
+          "totalLatencyMs": 115095,
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          },
+          "namedScores": {},
+          "namedScoresCount": {},
+          "namedScoreWeights": {},
+          "cost": 0
+        }
+      }
+    ],
+    "results": [
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "No assertions",
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          }
+        },
+        "id": "06cd2e4f-c105-423c-b4ae-7bc691ce6412",
+        "latencyMs": 115095,
+        "namedScores": {},
+        "prompt": {
+          "raw": "# Create UX\n\n## Role\nYou are a Senior UX Designer who produces clear, developer-ready UX specifications.\n\n## Task\nGiven a PRD, produce a UX Specification describing the user interface and interaction flows for the described feature or system.\n\n## Context\nTeamPulse serves two distinct user types:\n- **Engineering Managers:** Non-technical HR/operations role. Need intuitive configuration UI for survey setup, scheduling, team management. Expect guided workflows.\n- **Engineers:** Technical users who receive surveys via email. Minimal UI, mobile-first, fast completion (under 3 minutes). One-time link driven.\n\nPlatform: Web application, mobile-accessible (responsive design required).\nTechnical sophistication: Managers expect visual configuration; engineers expect instant, distraction-free experience.\n\n## Constraints\nUX specification must include:\n- **Component Inventory:** Every UI element (buttons, forms, tables, modals, fields) with clear description and purpose\n- **Interaction Flows:** Separate, detailed flows for each user type (manager and engineer). Each flow shows step-by-step user actions and system responses.\n- **State Handling:** Explicit documentation of all states—error states (validation failures, expired links, closed surveys), empty states (no teams, no surveys, no results), loading states (form loading, results computing)\n- **Accessibility Notes:** Mobile layout specifics (vertical stacking, 375px viewport), touch target sizes (≥44px), keyboard navigation, ARIA labels, color contrast\n- **Format Specificity:** ASCII mockups or wireframe descriptions showing layout; button states (default, hover, disabled, loading, success); input validation rules (required fields, character limits, allowed characters); specific error messages (not \"error\" but actual copy)\n\nMobile accessibility critical: Survey form must load in <1.5s on 4G, be completable in under 3 minutes, with clear navigation and no external distractions.\n\n## Product Requirements Document\n# TeamPulse PRD (Summary)\nSelf-hosted team health check system. Managers configure anonymous pulse surveys. Engineers answer via one-time link. Results aggregated into trend dashboard.\n\n## Key Features\nManager authentication (Entra ID SSO), team management, survey configuration, scheduled dispatch, email notifications, survey form, response aggregation, trend dashboard, multi-tenant isolation, CSV export.\n\n## Data Model\nmanagers, teams, team_members, survey_configs, survey_instances, survey_tokens, responses\n\n## Non-Functional Requirements\n- Survey dispatch: ±60s tolerance, ±30s close tolerance\n- Form load: <1.5s p95 on 4G\n- Dashboard query: <500ms p95\n- Scale: 50 teams × 15 members max\n- Survey form must be mobile-accessible and completable in under 3 minutes\n",
+          "label": "# Create UX\n\n## Role\nYou are a Senior UX Designer who produces clear, developer-ready UX specifications.\n\n## Task\nGiven a PRD, produce a UX Specification describing the user interface and interaction flows for the described feature or system.\n\n## Context\nTeamPulse serves two distinct user types:\n- **Engineering Managers:** Non-technical HR/operations role. Need intuitive configuration UI for survey setup, scheduling, team management. Expect guided workflows.\n- **Engineers:** Technical users who receive surveys via email. Minimal UI, mobile-first, fast completion (under 3 minutes). One-time link driven.\n\nPlatform: Web application, mobile-accessible (responsive design required).\nTechnical sophistication: Managers expect visual configuration; engineers expect instant, distraction-free experience.\n\n## Constraints\nUX specification must include:\n- **Component Inventory:** Every UI element (buttons, forms, tables, modals, fields) with clear description and purpose\n- **Interaction Flows:** Separate, detailed flows for each user type (manager and engineer). Each flow shows step-by-step user actions and system responses.\n- **State Handling:** Explicit documentation of all states—error states (validation failures, expired links, closed surveys), empty states (no teams, no surveys, no results), loading states (form loading, results computing)\n- **Accessibility Notes:** Mobile layout specifics (vertical stacking, 375px viewport), touch target sizes (≥44px), keyboard navigation, ARIA labels, color contrast\n- **Format Specificity:** ASCII mockups or wireframe descriptions showing layout; button states (default, hover, disabled, loading, success); input validation rules (required fields, character limits, allowed characters); specific error messages (not \"error\" but actual copy)\n\nMobile accessibility critical: Survey form must load in <1.5s on 4G, be completable in under 3 minutes, with clear navigation and no external distractions.\n\n## Product Requirements Document\n{{prd_input}}\n",
+          "config": {
+            "provider": {
+              "scriptPath": " node ../../claude.js",
+              "options": {
+                "id": "exec: node ../../claude.js",
+                "config": {
+                  "model": "haiku",
+                  "basePath": "."
+                },
+                "env": {}
+              },
+              "delay": 0,
+              "label": "haiku"
+            }
+          }
+        },
+        "promptId": "7850d2381f71fba24174bbb74614d24b0ea48b863f7fe7dff1f9589e9f35c8a7",
+        "promptIdx": 0,
+        "provider": {
+          "id": "exec: node ../../claude.js",
+          "label": "haiku"
+        },
+        "response": {
+          "output": "I need permission to write the specification file. Let me know when ready, and I'll create the comprehensive UX specification document with all components, flows, state handling, accessibility guidelines, and detailed mockups."
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "TeamPulse UX — Iteration 1 (Context + Constraints)",
+          "vars": {
+            "prd_input": "# TeamPulse PRD (Summary)\nSelf-hosted team health check system. Managers configure anonymous pulse surveys. Engineers answer via one-time link. Results aggregated into trend dashboard.\n\n## Key Features\nManager authentication (Entra ID SSO), team management, survey configuration, scheduled dispatch, email notifications, survey form, response aggregation, trend dashboard, multi-tenant isolation, CSV export.\n\n## Data Model\nmanagers, teams, team_members, survey_configs, survey_instances, survey_tokens, responses\n\n## Non-Functional Requirements\n- Survey dispatch: ±60s tolerance, ±30s close tolerance\n- Form load: <1.5s p95 on 4G\n- Dashboard query: <500ms p95\n- Scale: 50 teams × 15 members max\n- Survey form must be mobile-accessible and completable in under 3 minutes\n"
+          },
+          "assert": [],
+          "options": {
+            "provider": {
+              "scriptPath": " node ../../claude.js",
+              "options": {
+                "id": "exec: node ../../claude.js",
+                "config": {
+                  "model": "haiku",
+                  "basePath": "."
+                },
+                "env": {}
+              },
+              "delay": 0,
+              "label": "haiku"
+            }
+          },
+          "metadata": {}
+        },
+        "testIdx": 0,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "prd_input": "# TeamPulse PRD (Summary)\nSelf-hosted team health check system. Managers configure anonymous pulse surveys. Engineers answer via one-time link. Results aggregated into trend dashboard.\n\n## Key Features\nManager authentication (Entra ID SSO), team management, survey configuration, scheduled dispatch, email notifications, survey form, response aggregation, trend dashboard, multi-tenant isolation, CSV export.\n\n## Data Model\nmanagers, teams, team_members, survey_configs, survey_instances, survey_tokens, responses\n\n## Non-Functional Requirements\n- Survey dispatch: ±60s tolerance, ±30s close tolerance\n- Form load: <1.5s p95 on 4G\n- Dashboard query: <500ms p95\n- Scale: 50 teams × 15 members max\n- Survey form must be mobile-accessible and completable in under 3 minutes\n"
+        },
+        "metadata": {
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      }
+    ],
+    "stats": {
+      "successes": 1,
+      "failures": 0,
+      "errors": 0,
+      "tokenUsage": {
+        "prompt": 0,
+        "completion": 0,
+        "cached": 0,
+        "total": 0,
+        "numRequests": 1,
+        "completionDetails": {
+          "reasoning": 0,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 0,
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "numRequests": 0,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      },
+      "durationMs": 115144,
+      "evaluationDurationMs": 115144
+    }
+  },
+  "config": {
+    "tags": {},
+    "prompts": [
+      {
+        "id": "create-ux-with-context-constraints",
+        "raw": "# Create UX\n\n## Role\nYou are a Senior UX Designer who produces clear, developer-ready UX specifications.\n\n## Task\nGiven a PRD, produce a UX Specification describing the user interface and interaction flows for the described feature or system.\n\n## Context\nTeamPulse serves two distinct user types:\n- **Engineering Managers:** Non-technical HR/operations role. Need intuitive configuration UI for survey setup, scheduling, team management. Expect guided workflows.\n- **Engineers:** Technical users who receive surveys via email. Minimal UI, mobile-first, fast completion (under 3 minutes). One-time link driven.\n\nPlatform: Web application, mobile-accessible (responsive design required).\nTechnical sophistication: Managers expect visual configuration; engineers expect instant, distraction-free experience.\n\n## Constraints\nUX specification must include:\n- **Component Inventory:** Every UI element (buttons, forms, tables, modals, fields) with clear description and purpose\n- **Interaction Flows:** Separate, detailed flows for each user type (manager and engineer). Each flow shows step-by-step user actions and system responses.\n- **State Handling:** Explicit documentation of all states—error states (validation failures, expired links, closed surveys), empty states (no teams, no surveys, no results), loading states (form loading, results computing)\n- **Accessibility Notes:** Mobile layout specifics (vertical stacking, 375px viewport), touch target sizes (≥44px), keyboard navigation, ARIA labels, color contrast\n- **Format Specificity:** ASCII mockups or wireframe descriptions showing layout; button states (default, hover, disabled, loading, success); input validation rules (required fields, character limits, allowed characters); specific error messages (not \"error\" but actual copy)\n\nMobile accessibility critical: Survey form must load in <1.5s on 4G, be completable in under 3 minutes, with clear navigation and no external distractions.\n\n## Product Requirements Document\n{{prd_input}}\n"
+      }
+    ],
+    "providers": [
+      {
+        "id": "exec: node ../../claude.js",
+        "label": "haiku",
+        "config": {
+          "model": "haiku"
+        }
+      }
+    ],
+    "tests": [
+      {
+        "description": "TeamPulse UX — Iteration 1 (Context + Constraints)",
+        "vars": {
+          "prd_input": "# TeamPulse PRD (Summary)\nSelf-hosted team health check system. Managers configure anonymous pulse surveys. Engineers answer via one-time link. Results aggregated into trend dashboard.\n\n## Key Features\nManager authentication (Entra ID SSO), team management, survey configuration, scheduled dispatch, email notifications, survey form, response aggregation, trend dashboard, multi-tenant isolation, CSV export.\n\n## Data Model\nmanagers, teams, team_members, survey_configs, survey_instances, survey_tokens, responses\n\n## Non-Functional Requirements\n- Survey dispatch: ±60s tolerance, ±30s close tolerance\n- Form load: <1.5s p95 on 4G\n- Dashboard query: <500ms p95\n- Scale: 50 teams × 15 members max\n- Survey form must be mobile-accessible and completable in under 3 minutes\n"
+        },
+        "assert": []
+      }
+    ],
+    "env": {},
+    "defaultTest": {
+      "options": {
+        "provider": "exec: node ../../claude.js"
+      },
+      "vars": {},
+      "assert": [],
+      "metadata": {}
+    },
+    "outputPath": [
+      "ux-iter1-results.json"
+    ],
+    "extensions": [],
+    "metadata": {},
+    "evaluateOptions": {}
+  },
+  "shareableUrl": null,
+  "metadata": {
+    "promptfooVersion": "0.122.2",
+    "nodeVersion": "v26.8.1",
+    "platform": "darwin",
+    "arch": "arm64",
+    "exportedAt": "2026-09-04T17:03:00.983Z",
+    "evaluationCreatedAt": "2026-09-04T17:01:05.761Z"
+  },
+  "vars": [
+    "prd_input"
+  ],
+  "runtimeOptions": {
+    "eventSource": "cli",
+    "showProgressBar": true,
+    "repeat": 1,
+    "maxConcurrency": 20,
+    "cache": false
+  }
+}

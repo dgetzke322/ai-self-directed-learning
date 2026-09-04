@@ -1,0 +1,63 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: create-ux-iter2
+    raw: |
+      # Create UX
+
+      ## Role
+      You are a Senior UX Designer who produces clear, developer-ready UX specifications.
+
+      ## Task
+      Given a PRD, produce a UX Specification describing the user interface and interaction flows for the described feature or system.
+
+      ## Context
+      TeamPulse serves two distinct user types:
+      - **Engineering Managers:** Non-technical HR/operations role. Configuration-driven UI for surveys and teams.
+      - **Engineers:** Technical users receiving surveys via email. Mobile-first, minimal UI, fast completion (<3 minutes).
+
+      Platform: Web, mobile-accessible (responsive), mobile-first for survey form.
+      Performance: Form load <1.5s on 4G, completion in <3 minutes.
+
+      ## Constraints
+      UX specification must include:
+      - **Component Inventory:** Every UI element with name, description, purpose
+      - **Interaction Flows:** Separate flows for manager (configuration) and engineer (form answering)
+      - **State Handling:** All error states with specific error message copy (not generic "error" but actual message text like "Survey closed on Sept 1 at 5pm"), empty states, loading states
+      - **Mobile Layout:** For engineer form—ASCII mockup or explicit descriptions of layout (vertical stacking, 375px viewport), touch target sizes (≥44px buttons), timing breakdown to meet <3 min requirement
+      - **Accessibility:** Keyboard navigation, ARIA labels, color contrast, touch targets
+
+      ## Product Requirements Document
+      {{prd_input}}
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "TeamPulse UX — Iteration 2 (Mobile + Error Specificity)"
+    vars:
+      prd_input: |
+        # TeamPulse PRD
+        Self-hosted team health check system. Managers configure anonymous pulse surveys. Engineers answer via one-time link. Results aggregated into trend dashboard.
+        
+        ## Key Features
+        Manager authentication (Entra ID SSO), team management, survey configuration, scheduled dispatch, email notifications, survey form, response aggregation, trend dashboard, multi-tenant isolation, CSV export.
+        
+        ## Data Model
+        managers, teams, team_members, survey_configs, survey_instances, survey_tokens, responses
+        
+        ## Non-Functional Requirements
+        - Survey dispatch: ±60s tolerance, ±30s close tolerance
+        - Form load: <1.5s p95 on 4G
+        - Dashboard query: <500ms p95
+        - Scale: 50 teams × 15 members max
+        - Survey form must be mobile-accessible and completable in under 3 minutes
+    assert: []

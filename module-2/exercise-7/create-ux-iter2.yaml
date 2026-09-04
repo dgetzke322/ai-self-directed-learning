@@ -1,0 +1,45 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: create-ux-iter2-mobile-focus
+    raw: |
+      # Create UX
+
+      ## Role
+      You are a Senior UX Designer who produces clear, developer-ready UX specifications.
+
+      ## Task
+      Given a PRD, produce a UX Specification describing the user interface and interaction flows for the described feature or system.
+
+      ## Context
+      TeamPulse's critical UX challenge is the survey form, which must work on mobile in under 3 minutes. Manager UI is desktop-first config; Engineer form is mobile-first one-time-link experience.
+
+      ## Constraints
+      - **Mobile-First Layout for Survey Form:** ASCII mockup on 375px viewport showing question/input placement
+      - **Touch Targets:** ≥44px buttons and inputs for thumb operation
+      - **Timing Breakdown:** Email open → form load <1.5s → per-question <500ms → submit <2s = under 3 min total
+      - **Error Messages:** Specific text (e.g., "Please answer all questions" not generic "Error")
+
+      ## Product Requirements Document
+      {{prd_input}}
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "Iteration 2: Mobile-First Layout + Timing Breakdown"
+    vars:
+      prd_input: |
+        # TeamPulse PRD
+        Self-hosted team health check system. Managers configure anonymous pulse surveys. Engineers answer via one-time link. Results aggregated into trend dashboard.
+        - Form load: <1.5s p95 on 4G
+        - Survey form must be mobile-accessible and completable in under 3 minutes
+    assert: []

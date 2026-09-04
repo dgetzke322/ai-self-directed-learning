@@ -1,0 +1,48 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: create-ux-iter3-api-mapping
+    raw: |
+      # Create UX
+
+      ## Role
+      You are a Senior UX Designer who produces clear, developer-ready UX specifications.
+
+      ## Task
+      Given a PRD, produce a UX Specification describing the user interface and interaction flows for the described feature or system.
+
+      ## Context
+      TeamPulse flows map to clear API endpoints:
+      - Managers: Survey CRUD → POST/PUT /api/surveys, team management → /api/teams, results → GET /api/results
+      - Engineers: Token validation → GET /api/tokens/{id}, form submit → POST /api/responses
+
+      ## Constraints
+      - **API Mapping:** Every user action tied to endpoint. Format: "User clicks [button]" → [button state] → [HTTP method] /api/[resource] → [wait for response] → [success/error UX]
+      - **Error Handling:** API error codes mapped to UX messages (400 → "Invalid data", 401 → "Please log in", 404 → "Not found", 500 → "Try again later")
+      - **Loading States:** Show spinner/disabled state during API calls
+      - **Flow Diagrams:** Decision points and API call markers
+
+      ## Product Requirements Document
+      {{prd_input}}
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "Iteration 3: API Mapping + Error State Specificity"
+    vars:
+      prd_input: |
+        # TeamPulse PRD
+        Self-hosted team health check system. Managers configure anonymous pulse surveys. Engineers answer via one-time link. Results aggregated into trend dashboard.
+        - Manager: Entra ID auth, team + survey config
+        - Engineer: One-time link survey form, response submission
+        - Admin: Results aggregation, CSV export
+    assert: []

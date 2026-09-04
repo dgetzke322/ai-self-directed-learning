@@ -1,0 +1,174 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: create-ux-iter1-base
+    raw: |
+      # Create UX
+
+      ## Role
+      You are a Senior UX Designer who produces clear, developer-ready UX specifications.
+
+      ## Task
+      Given a PRD, produce a UX Specification describing the user interface and interaction flows for the described feature or system.
+
+      ## Context
+      TeamPulse serves two distinct user types:
+      - **Engineering Managers:** Non-technical HR/operations role. Need intuitive configuration UI for survey setup, scheduling, team management. Expect guided workflows.
+      - **Engineers:** Technical users who receive surveys via email. Minimal UI, mobile-first, fast completion (under 3 minutes). One-time link driven.
+
+      Platform: Web application, mobile-accessible (responsive design required).
+      Technical sophistication: Managers expect visual configuration; engineers expect instant, distraction-free experience.
+
+      ## Constraints
+      UX specification must include:
+      - **Component Inventory:** Every UI element (buttons, forms, tables, modals, fields) with clear description and purpose
+      - **Interaction Flows:** Separate, detailed flows for each user type (manager and engineer). Each flow shows step-by-step user actions and system responses.
+      - **State Handling:** Explicit documentation of all states—error states (validation failures, expired links, closed surveys), empty states (no teams, no surveys, no results), loading states (form loading, results computing)
+      - **Accessibility Notes:** Mobile layout specifics (vertical stacking, 375px viewport), touch target sizes (≥44px), keyboard navigation, ARIA labels, color contrast
+      - **Format Specificity:** ASCII mockups or wireframe descriptions showing layout; button states (default, hover, disabled, loading, success); input validation rules (required fields, character limits, allowed characters); specific error messages (not "error" but actual copy)
+
+      Mobile accessibility critical: Survey form must load in <1.5s on 4G, be completable in under 3 minutes, with clear navigation and no external distractions.
+
+      ## Product Requirements Document
+      {{prd_input}}
+
+  - id: create-ux-iter2-mobile-focus
+    raw: |
+      # Create UX
+
+      ## Role
+      You are a Senior UX Designer who produces clear, developer-ready UX specifications.
+
+      ## Task
+      Given a PRD, produce a UX Specification describing the user interface and interaction flows for the described feature or system.
+
+      ## Context
+      TeamPulse's critical UX challenge is the survey form, which must work on mobile in under 3 minutes.
+
+      **Manager Experience:** Desktop-primary, configuration-heavy, dashboard with data aggregation.
+      **Engineer Experience:** Mobile-first, form-only, minimal navigation, one-time link delivery.
+
+      Platform: React web app, Tailwind CSS styling. Mobile is primary constraint—survey form must be completable on iPhone SE (375px), touchscreen-friendly.
+
+      ## Constraints
+      UX specification must include:
+      - **Mobile-First Layout:** For engineer survey form—explicit ASCII mockup or wireframe showing vertical layout on 375px viewport. Show where each question/input lives, button placement, spacing.
+      - **Touch-Friendly Design:** Buttons and inputs ≥44px, spacing suitable for thumb-operated interface
+      - **Timing Breakdown:** To achieve <3 minutes completion:
+        * Email click → form load: <1.5s (per PRD)
+        * Form navigation (next question, etc.): <500ms per interaction
+        * Submit: <2s
+        * Clearly map where time is spent and design to minimize friction
+      - **Error Handling:** Specific error message text for validation failures (e.g., "Please answer all questions before submitting" not just "Error")
+      - **Manager Configuration UI:** Separate flow and layout (desktop-optimized, form builder, team selector)
+      - **State Documentation:** Expired link, survey closed, already answered, network error—all with specific UX handling
+
+      ## Product Requirements Document
+      {{prd_input}}
+
+  - id: create-ux-iter3-api-mapping
+    raw: |
+      # Create UX
+
+      ## Role
+      You are a Senior UX Designer who produces clear, developer-ready UX specifications.
+
+      ## Task
+      Given a PRD, produce a UX Specification describing the user interface and interaction flows for the described feature or system.
+
+      ## Context
+      TeamPulse has clear role-based architecture:
+      - **Manager flows:** Config UI calls manager API endpoints (team CRUD, survey CRUD, results query)
+      - **Engineer flows:** Form submission calls response API endpoints (token validation, response POST)
+      - Each endpoint has specific preconditions and error cases that must map to UX states
+
+      Platform: Web, mobile-accessible.
+
+      ## Constraints
+      UX specification must include:
+      - **API Mapping:** Every user action explicitly tied to an endpoint. For example:
+        * "Manager clicks 'Create Survey'" → Button state → POST /api/surveys → Wait for response → Show success toast or error message
+        * "Engineer submits form" → Validation → POST /api/responses → Show loading → Redirect to thank-you page or show error
+      - **Component Inventory:** Each component's responsibilities, prop inputs, event outputs
+      - **Flow Diagrams:** Interaction flows (manager survey creation, engineer form answering, results aggregation) with decision points and API calls
+      - **Error States:** Tied to API error codes (400 bad request → specific message, 401 unauthorized → redirect to login, 404 not found → "Survey not found", 500 server error → "Please try again later")
+      - **Loading States:** Where user waits for API response, what UI feedback they get
+      - **Accessibility:** Per WCAG 2.1 AA standards
+
+      ## Product Requirements Document
+      {{prd_input}}
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "Iteration 1: Context + Basic Constraints (Manager/Engineer Differentiation)"
+    vars:
+      prd_input: |
+        # TeamPulse PRD (Summary)
+        Self-hosted team health check system. Managers configure anonymous pulse surveys. Engineers answer via one-time link. Results aggregated into trend dashboard.
+
+        ## Key Features
+        Manager authentication (Entra ID SSO), team management, survey configuration, scheduled dispatch, email notifications, survey form, response aggregation, trend dashboard, multi-tenant isolation, CSV export.
+
+        ## Data Model
+        managers, teams, team_members, survey_configs, survey_instances, survey_tokens, responses
+
+        ## Non-Functional Requirements
+        - Survey dispatch: ±60s tolerance, ±30s close tolerance
+        - Form load: <1.5s p95 on 4G
+        - Dashboard query: <500ms p95
+        - Scale: 50 teams × 15 members max
+        - Survey form must be mobile-accessible and completable in under 3 minutes
+    prompt: create-ux-iter1-base
+    assert: []
+
+  - description: "Iteration 2: Mobile-First Layout + Timing Breakdown"
+    vars:
+      prd_input: |
+        # TeamPulse PRD (Summary)
+        Self-hosted team health check system. Managers configure anonymous pulse surveys. Engineers answer via one-time link. Results aggregated into trend dashboard.
+
+        ## Key Features
+        Manager authentication (Entra ID SSO), team management, survey configuration, scheduled dispatch, email notifications, survey form, response aggregation, trend dashboard, multi-tenant isolation, CSV export.
+
+        ## Data Model
+        managers, teams, team_members, survey_configs, survey_instances, survey_tokens, responses
+
+        ## Non-Functional Requirements
+        - Survey dispatch: ±60s tolerance, ±30s close tolerance
+        - Form load: <1.5s p95 on 4G
+        - Dashboard query: <500ms p95
+        - Scale: 50 teams × 15 members max
+        - Survey form must be mobile-accessible and completable in under 3 minutes
+    prompt: create-ux-iter2-mobile-focus
+    assert: []
+
+  - description: "Iteration 3: API Mapping + Error State Specificity"
+    vars:
+      prd_input: |
+        # TeamPulse PRD (Summary)
+        Self-hosted team health check system. Managers configure anonymous pulse surveys. Engineers answer via one-time link. Results aggregated into trend dashboard.
+
+        ## Key Features
+        Manager authentication (Entra ID SSO), team management, survey configuration, scheduled dispatch, email notifications, survey form, response aggregation, trend dashboard, multi-tenant isolation, CSV export.
+
+        ## Data Model
+        managers, teams, team_members, survey_configs, survey_instances, survey_tokens, responses
+
+        ## Non-Functional Requirements
+        - Survey dispatch: ±60s tolerance, ±30s close tolerance
+        - Form load: <1.5s p95 on 4G
+        - Dashboard query: <500ms p95
+        - Scale: 50 teams × 15 members max
+        - Survey form must be mobile-accessible and completable in under 3 minutes
+    prompt: create-ux-iter3-api-mapping
+    assert: []

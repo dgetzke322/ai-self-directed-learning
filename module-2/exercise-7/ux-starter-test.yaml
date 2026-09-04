@@ -1,0 +1,53 @@
+commandLineOptions:
+  maxConcurrency: 5
+
+prompts:
+  - id: create-ux-starter
+    raw: |
+      # Create UX
+
+      ## Role
+      You are a Senior UX Designer who produces clear, developer-ready UX specifications.
+
+      ## Task
+      Given a PRD, produce a UX Specification describing the user interface and interaction flows for the described feature or system.
+
+      ## Context
+      (No context provided)
+
+      ## Constraints
+      (No constraints provided)
+
+      ## Product Requirements Document
+      {{prd_input}}
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "TeamPulse UX — Starter (No Context/Constraints)"
+    vars:
+      prd_input: |
+        # TeamPulse PRD (Summary)
+        Self-hosted team health check system. Managers configure anonymous pulse surveys. Engineers answer via one-time link. Results aggregated into trend dashboard.
+
+        ## Key Features
+        Manager authentication (Entra ID SSO), team management, survey configuration, scheduled dispatch, email notifications, survey form, response aggregation, trend dashboard, multi-tenant isolation, CSV export.
+
+        ## Data Model
+        managers, teams, team_members, survey_configs, survey_instances, survey_tokens, responses
+
+        ## Non-Functional Requirements
+        - Survey dispatch: ±60s tolerance, ±30s close tolerance
+        - Form load: <1.5s p95 on 4G
+        - Dashboard query: <500ms p95
+        - Scale: 50 teams × 15 members max
+        - Survey form must be mobile-accessible and completable in under 3 minutes
+    assert: []
