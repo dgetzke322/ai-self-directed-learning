@@ -47,7 +47,7 @@ Haiku produced a UX specification titled "TeamPulse UX Specification" with gener
 4. **Mobile Accessibility:** Vague
    - "Mobile support" mentioned without specifics
    - No viewport size, touch target size, timing requirements
-   - Missed the <3-minute completion requirement
+   - Missed the < 3-minute completion requirement
 
 5. **Developer-Ready Details:** Absent
    - No ASCII mockups or layout descriptions
@@ -60,7 +60,7 @@ Haiku produced a UX specification titled "TeamPulse UX Specification" with gener
 
 ### Context Needed
 - **Audience specificity:** Engineering managers vs. engineers have different needs and technical sophistication
-- **Platform emphasis:** Mobile-first is critical (mobile-accessible, <3 min completion)
+- **Platform emphasis:** Mobile-first is critical (mobile-accessible, < 3 min completion)
 - **User sophistication:** Managers expect guided config; engineers expect instant, distraction-free experience
 
 ### Constraints Needed
@@ -68,7 +68,7 @@ Haiku produced a UX specification titled "TeamPulse UX Specification" with gener
 - **Button/state documentation:** Every interactive element must have explicit states
 - **Error messages:** Specific copy, not generic
 - **Validation rules:** Character limits, required fields, allowed characters
-- **Mobile performance:** <1.5s load time on 4G, <3 minute completion flow
+- **Mobile performance:** <1.5s load time on 4G, < 3 minute completion flow
 
 ## Hypothesis for Iteration 1
 
