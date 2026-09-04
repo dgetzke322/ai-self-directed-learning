@@ -1,0 +1,50 @@
+commandLineOptions:
+  maxConcurrency: 10
+
+prompts:
+  - id: create-prd-baseline
+    raw: |
+      # Create PRD
+      {{input}}
+  - id: create-prd-sonnet
+    raw: |
+      # Create PRD
+      {{input}}
+
+defaultTest:
+  options:
+    provider: 'openai:chat'
+
+providers:
+  - id: 'openai:chat'
+    label: claude-sonnet
+    config:
+      model: claude-sonnet-4-20250514
+      temperature: 0
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "DevLog PRD Generation"
+    vars:
+      input: |
+        **Product:** DevLog — Daily Developer Activity Digest
+
+        **Problem:** Developers need a lightweight way to recap their day and share work with the team.
+
+        **Solution:** Web form + nightly Slack digest system where developers log their work, completion status, blockers, and plans. Aggregated summary posts to team Slack channel. Managers can view 30-day history in dashboard.
+
+        **Key Requirements:**
+        - Simple web form (2 min to complete): what they worked on, what they completed, blockers, plan tomorrow
+        - Nightly job aggregates and posts to Slack (readable without clicking through)
+        - Opt-in/out for digest inclusion
+        - Manager dashboard: 30-day rolling history
+        
+        **Technical Context:** React, Python/FastAPI, PostgreSQL, Slack Bolt, Docker/ECS Fargate, Entra ID OIDC
+        
+        **Out of Scope V1:** AI summarization, sentiment analysis, cross-team comparisons, other integrations
+
+        Generate a professional PRD for this product.
+    assert: []

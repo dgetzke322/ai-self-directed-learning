@@ -1,0 +1,38 @@
+commandLineOptions:
+  maxConcurrency: 20
+prompts:
+  - id: arch
+    raw: |
+      # Create Architecture
+      ## Role
+      Senior Solutions Architect
+      
+      ## Task
+      Given PRD for DevLog daily digest system, produce architecture document.
+      
+      ## Context
+      Tech stack: React 18, Python/FastAPI, PostgreSQL 16, Slack Bolt, Docker/ECS Fargate, Entra ID OIDC
+      
+      ## Constraints
+      - Nightly aggregation job (scalable to 100+ teams)
+      - Slack message formatting (readable in-channel, no external links)
+      - Manager dashboard: 30-day rolling history with filtering
+      - Multi-tenant isolation (manager sees only own team's logs)
+      - Performance: dashboard query <500ms
+
+      ## Product Requirements Document
+      DevLog: Daily developer activity digest system. Developers fill web form (work completed, blockers, tomorrow's plan). System aggregates nightly and posts to Slack. Managers view team history in dashboard.
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../../claude.js'
+providers:
+  - id: 'exec: node ../../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+tests:
+  - description: "DevLog Architecture"
+    vars:
+      input: "test"
+    assert: []

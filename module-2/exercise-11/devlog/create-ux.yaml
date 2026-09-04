@@ -1,0 +1,40 @@
+commandLineOptions:
+  maxConcurrency: 20
+prompts:
+  - id: ux
+    raw: |
+      # Create UX
+      ## Role
+      Senior UX Designer
+      
+      ## Task
+      Produce developer-ready UX spec for DevLog product.
+      
+      ## Context
+      Two audiences: (1) developers (quick form entry) and (2) managers (dashboard review)
+      Mobile-first: form must work on phones (375px), <2 min to complete
+      Slack integration: summary posts to team channel; must be readable without navigation
+      
+      ## Constraints
+      - Flow 1 (Developer): Email-based auth, quick form (4 fields: work completed, blockers, tomorrow)
+      - Flow 2 (Manager): Dashboard with filters (date range, team, status), 30-day history, rollup view
+      - Mobile responsive: 44px+ touch targets, <1.5s load on 4G
+      - Slack format: Table or bullet-list, readable in-channel (no external navigation)
+      - Accessibility: WCAG 2.1 AA minimum
+      
+      ## Product Requirements Document
+      DevLog: Daily developer activity digest system. Developers fill web form (work completed, blockers, tomorrow's plan). System aggregates nightly and posts to Slack. Managers view team history in dashboard.
+      
+defaultTest:
+  options:
+    provider: 'exec: node ../../../claude.js'
+providers:
+  - id: 'exec: node ../../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+tests:
+  - description: "DevLog UX Spec"
+    vars:
+      input: "test"
+    assert: []

@@ -1,0 +1,47 @@
+commandLineOptions:
+  maxConcurrency: 20
+prompts:
+  - id: epics
+    raw: |
+      # Create Epics and Stories
+      ## Role
+      Product Manager
+      
+      ## Task
+      Decompose DevLog product into epics and stories. Input: PRD, Architecture, UX spec.
+      
+      ## Context
+      Tech stack: React, FastAPI, PostgreSQL, Slack Bolt, Docker/ECS, Entra ID OIDC
+      Product: Developer daily activity digest (form → Slack post → manager dashboard)
+      
+      ## Constraints
+      - Stories right-sized (1-3 days implementation)
+      - Acceptance criteria testable (not vague)
+      - No duplicate stories
+      - All PRD features covered
+      - Dependencies explicit (X must precede Y)
+      
+      ## Inputs
+      
+      ### Product Requirements
+      DevLog: Daily developer activity digest system. Developers fill web form (work completed, blockers, tomorrow's plan). System aggregates nightly and posts to Slack. Managers view team history in dashboard.
+      
+      ### Architecture
+      React 18 frontend, FastAPI backend, PostgreSQL with privacy-by-schema (no FK from responses to users), Slack Bolt integration, nightly aggregation job, manager dashboard with 30-day history.
+      
+      ### UX
+      Developer form (2 min flow, email auth) + Manager dashboard (filters, 30-day rollup, team isolation).
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../../claude.js'
+providers:
+  - id: 'exec: node ../../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+tests:
+  - description: "DevLog Epics & Stories"
+    vars:
+      input: "test"
+    assert: []

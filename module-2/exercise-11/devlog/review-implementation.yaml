@@ -1,0 +1,43 @@
+commandLineOptions:
+  maxConcurrency: 20
+prompts:
+  - id: review
+    raw: |
+      # Review Implementation
+      ## Role
+      Senior Engineer
+      
+      ## Task
+      Review Slack aggregation job implementation against acceptance criteria and code quality.
+      
+      ## Context
+      Story: DevLog Slack aggregation nightly job
+      Implementation: Python/FastAPI, SQLAlchemy ORM, Slack Bolt client, APScheduler
+      
+      ## Constraints
+      - Report structure: AC assessment, code quality review, test coverage, recommendations
+      - Specificity: Reference code line numbers, AC pass/fail with justification
+      - Traceability: Every AC addressed with evidence
+      
+      ## Acceptance Criteria
+      **AC1:** Collect all responses from previous 24h
+      **AC2:** Format as Slack message (table or bullets)
+      **AC3:** Post to team channel via Slack Bolt
+      **AC4:** Handle errors (missing channel, invalid token, network)
+      **AC5:** Log job execution (start, count, success/error)
+      
+      Produce: Code review report with findings
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../../claude.js'
+providers:
+  - id: 'exec: node ../../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+tests:
+  - description: "DevLog Review Implementation"
+    vars:
+      input: "test"
+    assert: []

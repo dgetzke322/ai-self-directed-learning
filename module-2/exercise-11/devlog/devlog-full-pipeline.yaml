@@ -1,0 +1,93 @@
+commandLineOptions:
+  maxConcurrency: 1
+  outputFile: devlog-pipeline-results.json
+prompts:
+  - id: prd
+    raw: |
+      # Create PRD
+      ## Role
+      Product Manager
+      
+      ## Task
+      Write product requirements document for DevLog.
+
+      ## Context
+      Daily developer activity digest. Developers fill web form (work completed, blockers, tomorrow). System aggregates nightly, posts to Slack, shows 30-day history in manager dashboard.
+
+      ## Constraints
+      - Problem and solution clearly stated
+      - All rules explicit (form validation, nightly aggregation, anonymization)
+      - V1 scope boundaries (no AI, no sentiment, no cross-team, no other integrations)
+      
+  - id: arch
+    raw: |
+      # Create Architecture
+      From DevLog PRD, produce architecture with:
+      - Component diagrams (React, FastAPI, PostgreSQL, Slack Bolt)
+      - Data model with privacy schema
+      - Deployment (Docker/ECS, nightly job)
+      - Open decisions
+      
+  - id: ux
+    raw: |
+      # Create UX
+      From DevLog PRD, produce UX spec with:
+      - Developer form flow (2 min, email auth, quick entry)
+      - Manager dashboard (filters, 30-day history, team isolation)
+      - Mobile responsive (375px, 44px targets)
+      - Slack message format (readable in-channel)
+
+  - id: epics
+    raw: |
+      # Create Epics and Stories
+      From DevLog PRD + Architecture + UX:
+      - Epic: Daily Form Submission
+      - Epic: Slack Aggregation
+      - Epic: Manager Dashboard
+      - Epic: Settings & Auth
+      - Each story: right-sized, testable AC, explicit deps, no dupes
+
+  - id: plan
+    raw: |
+      # Plan Story
+      **Story:** Slack Aggregation Job
+      
+      **AC1:** Collect responses 24h
+      **AC2:** Format Slack message
+      **AC3:** Post to team channel
+      **AC4:** Error handling
+      **AC5:** Logging
+      
+      Produce detailed plan with FastAPI patterns, SQLAlchemy, APScheduler
+
+  - id: impl
+    raw: |
+      # Implement Story
+      **Story:** Slack Aggregation Job
+      
+      **ACs:** (same as above)
+      
+      Produce Python implementation + tests
+
+  - id: review
+    raw: |
+      # Review Implementation
+      **Story:** Slack Aggregation Job
+      
+      Review against AC1-AC5 + code quality + test coverage
+      
+defaultTest:
+  options:
+    provider: 'exec: node ../../../claude.js'
+providers:
+  - id: 'exec: node ../../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+tests:
+  - description: "DevLog Full Pipeline"
+    vars:
+      input: "test"
+    assert:
+      - type: javascript
+        value: 'output.length > 0'

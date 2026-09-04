@@ -1,0 +1,44 @@
+commandLineOptions:
+  maxConcurrency: 20
+prompts:
+  - id: plan
+    raw: |
+      # Plan Story
+      ## Role
+      Senior Engineer
+      
+      ## Task
+      Produce implementation plan for DevLog Slack aggregation story.
+      
+      ## Context
+      Tech stack: Python/FastAPI, PostgreSQL, Slack Bolt, Docker/ECS Fargate
+      Story: Nightly aggregation job collects daily logs, formats Slack message, posts to team channels
+      Pattern: Scheduled job (APScheduler or similar), Slack Bolt client, PostgreSQL query
+      
+      ## Constraints
+      - Tech specificity: FastAPI patterns, Slack Bolt methods, PostgreSQL aggregation query
+      - Acceptance criteria traceability: each AC addressed
+      - Error handling: network failures, missing data, rate limiting
+      
+      ## Story & Acceptance Criteria
+      **Story:** Slack Aggregation Job
+      
+      **AC1:** Collects all responses from previous 24h
+      **AC2:** Formats as Slack message (table or bullets)
+      **AC3:** Posts to team channel via Slack Bolt
+      **AC4:** Handles errors (missing team channel, invalid token, network failure)
+      **AC5:** Logs job execution (start, row count, post success, errors)
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../../claude.js'
+providers:
+  - id: 'exec: node ../../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+tests:
+  - description: "DevLog Plan Story"
+    vars:
+      input: "test"
+    assert: []

@@ -1,0 +1,44 @@
+commandLineOptions:
+  maxConcurrency: 20
+prompts:
+  - id: impl
+    raw: |
+      # Implement Story
+      ## Role
+      Senior Engineer
+      
+      ## Task
+      Produce implementation code for DevLog Slack aggregation job.
+      
+      ## Context
+      Tech stack: Python/FastAPI, PostgreSQL, Slack Bolt, Docker/ECS Fargate
+      
+      ## Constraints
+      - Production code: async/await, proper error handling, logging
+      - Test coverage: happy path + error cases (network failure, missing data)
+      - Stack-aligned: Use SQLAlchemy ORM, Slack Bolt client methods, APScheduler patterns
+      
+      ## Story Details
+      **Story:** Slack Aggregation Job
+      
+      **AC1:** Collect all responses from previous 24h
+      **AC2:** Format as Slack message (table or bullets)
+      **AC3:** Post to team channel via Slack Bolt
+      **AC4:** Handle errors (missing channel, invalid token, network)
+      **AC5:** Log job execution (start, count, success/error)
+      
+      Produce: (1) Implementation code, (2) Unit/integration tests
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../../claude.js'
+providers:
+  - id: 'exec: node ../../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+tests:
+  - description: "DevLog Implement Story"
+    vars:
+      input: "test"
+    assert: []

@@ -1,0 +1,97 @@
+commandLineOptions:
+  maxConcurrency: 1
+  outputFile: blackjack-results.jsonl
+prompts:
+  - id: prd
+    raw: |
+      # Create PRD — Blackjack with Strategy Coach
+      ## Role: Product Manager
+      Write PRD for Blackjack game with strategy coaching.
+      
+      **Problem:** Players want to learn optimal Blackjack play.
+      
+      **Solution:** Interactive Blackjack game with basic strategy coach:
+      - Standard casino rules (hit soft 16, stand soft 17, blackjack 3:2)
+      - For each player decision, display optimal play from basic strategy
+      - Track decision accuracy (% matching optimal strategy) per session
+      - Support splits and soft/hard hand distinction
+      
+      **V1 Scope:** Single-player, basic strategy table, decision coaching, accuracy tracking.
+      
+      **Out of scope:** Insurance, doubling down, multi-hand complexity beyond splits.
+      
+  - id: arch
+    raw: |
+      # Create Architecture — Blackjack with Strategy Coach
+      ## Role: Senior Solutions Architect
+      From Blackjack PRD, produce architecture:
+      - Component architecture (React frontend, Node backend)
+      - Critical design: Basic strategy as lookup table (not calculated) — 2D matrix (player hand vs dealer upcard)
+      - Game state (deck, player hands, dealer hand, splits)
+      - Decision coach integration (look up optimal play from table)
+      - Accuracy tracking data model
+      
+  - id: ux
+    raw: |
+      # Create UX — Blackjack with Strategy Coach
+      ## Role: Senior UX Designer
+      From Blackjack PRD:
+      - Player hand display (cards, sum, soft/hard indicator)
+      - Dealer hand (hole card initially hidden)
+      - Action buttons (Hit, Stand, Split if available, Double if available)
+      - Strategy coach panel (show optimal move for this decision)
+      - Accuracy indicator (% decisions matching strategy this session)
+      - Mobile responsive
+      
+  - id: epics
+    raw: |
+      # Create Epics and Stories — Blackjack
+      From Blackjack PRD + Architecture + UX:
+      - Epic: Card Game Core (deck, shuffle, deal)
+      - Epic: Blackjack Rules Engine (hit/stand logic, bust detection, winning)
+      - Epic: Basic Strategy Implementation (lookup table, coach display)
+      - Epic: Decision Tracking (accuracy %)
+      - Each story: right-sized, testable AC, explicit dependencies
+      
+  - id: plan
+    raw: |
+      # Plan Story — Blackjack
+      **Story:** Implement Basic Strategy Lookup Table & Coach
+      
+      **AC1:** Build 2D lookup table: player hand (4-20) × dealer upcard (A-K) → optimal action (Hit/Stand/Double/Split)
+      **AC2:** Load table from reference (or inline as constants)
+      **AC3:** For each player decision point, look up optimal action from table
+      **AC4:** Display optimal action in UI (Strategy Coach panel)
+      **AC5:** Handle soft hands (Ace as 11) vs hard hands (Ace as 1) correctly
+      **AC6:** Support split decisions (if player can split, lookup includes Split option)
+      
+      **Critical Design Pattern:** This story is specifically about implementing the lookup table correctly, not a function that calculates optimal play.
+      
+  - id: impl
+    raw: |
+      # Implement Story — Blackjack
+      **Story:** Implement Basic Strategy Lookup Table & Coach
+      **ACs:** (same as above)
+      
+      Produce JavaScript implementation + tests.
+      
+  - id: review
+    raw: |
+      # Review Implementation — Blackjack
+      **Story:** Implement Basic Strategy Lookup Table & Coach
+      Review against AC1-AC6 + code quality + test coverage.
+      **Critical assessment:** Does it use a lookup table (correct) or a calculation function (incorrect for this kata)?
+      
+defaultTest:
+  options:
+    provider: 'exec: node ../../../claude.js'
+providers:
+  - id: 'exec: node ../../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+tests:
+  - description: "Blackjack Pipeline"
+    vars:
+      input: "test"
+    assert: []
