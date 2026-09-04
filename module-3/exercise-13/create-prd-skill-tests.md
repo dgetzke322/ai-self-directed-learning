@@ -218,30 +218,162 @@ Example bad: "Support multiple export formats"
 
 ---
 
-## Test Execution Template (To Be Filled During Step 3)
+## Test Execution Results (Step 3: Invocation Testing)
 
-For each case, record:
+### Positive Case 1: Product Vision Ready to Formalize
 
-```markdown
-### [Case Name]
+**Setup:** Engineer has design mockup + 6 requirements + explicit "I think this is ready to formalize"
 
-**Setup:** [What context did I provide to the model/skill?]
+**Expected result:** Skill SHOULD invoke
 
-**Expected result:** Skill should [invoke/not invoke]
+**Actual result:** ✅ Skill invoked
 
-**Actual result:** Skill [invoked/did not invoke]
+**Status:** ✅ PASS
 
-**Status:** ✅ PASS / ❌ FAIL
-
-**Notes:** [If failed, what would fix it?]
-```
+**Hypothesis:** "High-fidelity input with all positive signals (artifact, commitment, team, scope) → skill invokes"
+**Change:** N/A (passed on first test)
+**Result:** ✅ Confirmed
 
 ---
 
-## Success Criteria for Exercise 13
+### Positive Case 2: Product Idea Needs Formalization
 
-✅ All positive cases (1-2) result in skill invocation
-✅ All negative cases (1-3) result in skill NOT invoking
-✅ Quality cases pass when skill does invoke (output meets criteria)
-✅ Invocation description in skill file is specific enough to differentiate positive from negative cases
-✅ All iterations documented (hypothesis → change → result format)
+**Setup:** Customer feedback documented + 3 export formats identified + "We need a PRD"
+
+**Expected result:** Skill SHOULD invoke
+
+**Actual result:** ✅ Skill invoked
+
+**Status:** ✅ PASS
+
+**Hypothesis:** "Lower-fidelity but sufficient input (feedback documented + scope) → skill invokes"
+**Change:** N/A (passed on first test)
+**Result:** ✅ Confirmed
+
+---
+
+### Negative Case 1: Early Brainstorming
+
+**Setup:** Exploratory discussion, no artifact, exploratory language ("What if...")
+
+**Expected result:** Skill SHOULD NOT invoke
+
+**Actual result:** ✅ Skill did NOT invoke
+
+**Status:** ✅ PASS
+
+**Hypothesis:** "Brainstorming phase (no artifact, exploratory language) → skill correctly blocks"
+**Change:** N/A (passed on first test)
+**Result:** ✅ Confirmed — correctly prevented premature PRD generation
+
+---
+
+### Negative Case 2: PRD Already Exists
+
+**Setup:** Reviewing existing PRD, "let me review our current PRD"
+
+**Expected result:** Skill SHOULD NOT invoke
+
+**Actual result:** ✅ Skill did NOT invoke
+
+**Status:** ✅ PASS
+
+**Hypothesis:** "Refinement context (review, existing PRD) → skill correctly blocks"
+**Change:** N/A (passed on first test)
+**Result:** ✅ Confirmed — correctly prevented duplicate generation
+
+---
+
+### Negative Case 3: Implementation Started
+
+**Setup:** Sprint in progress, architecture approved, "Should we formalize what we're building?"
+
+**Expected result:** Skill SHOULD NOT invoke
+
+**Actual result:** ✅ Skill did NOT invoke
+
+**Status:** ✅ PASS
+
+**Hypothesis:** "Retrospective context (implementation in progress) → skill correctly blocks"
+**Change:** N/A (passed on first test)
+**Result:** ✅ Confirmed — correctly prevented late invocation
+
+---
+
+## Quality Test Execution Results (Step 4: Quality Validation)
+
+### Quality Case 1: Output Completeness
+
+**Condition:** Skill invoked (Positive Case 1), generated incident dashboard PRD
+
+**Expected:** Problem, solution, 5+ requirements, tech, scope, NFRs all specific (not vague)
+
+**Actual Results:**
+- ✅ Problem statement: Clear, specific (incident coordination challenge)
+- ✅ Solution: Explains HOW dashboard solves problem
+- ✅ Requirements: 7 specific, measurable features
+- ✅ Tech context: React, Node/Express, WebSockets, Slack Bolt named
+- ✅ V1 scope: Explicit in/out (multi-team yes, cross-region no)
+- ✅ NFRs: Performance < 2s, scale 50+ concurrent, 99.9% uptime
+
+**Status:** ✅ PASS
+
+---
+
+### Quality Case 2: Output Clarity for Downstream
+
+**Condition:** Skill invoked (Positive Case 2), generated analytics export PRD
+
+**Expected:** Architects/designers/PMs can act without clarification questions
+
+**Actual Results:**
+- ✅ Architects: Data source (PostgreSQL), backend (Node), storage (S3), email specified
+- ✅ Designers: One-click interface, date filtering, export options clear
+- ✅ PMs: 7 testable requirements, dependencies explicit, open decisions documented
+- ✅ No questions needed: All sections provide actionable guidance
+
+**Status:** ✅ PASS
+
+---
+
+## Iteration Summary
+
+**Total iterations:** 0 (no changes needed)
+
+**Hypothesis:** "Skill invocation metadata is precise enough on first attempt"
+**Result:** ✅ Confirmed — all 5 test cases passed on first execution
+**Conclusion:** Invocation criteria are sufficiently specific to differentiate positive from negative cases
+
+---
+
+## Self-Check for Exercise 13 Step 5
+
+✅ **Skill test file committed before skill file was built:** create-prd-skill-tests.md committed at Step 1
+
+✅ **At least 2 positive, 2 negative, and 2 quality test cases:** 
+- 2 positive cases
+- 3 negative cases (exceeds requirement)
+- 2 quality cases
+
+✅ **All positive cases invoke the skill:** 
+- Case 1: ✅ PASS (invoked)
+- Case 2: ✅ PASS (invoked)
+
+✅ **All negative cases do NOT invoke the skill:**
+- Case 1 (premature): ✅ PASS (did not invoke)
+- Case 2 (duplicate): ✅ PASS (did not invoke)
+- Case 3 (too-late): ✅ PASS (did not invoke)
+
+✅ **Quality test cases pass for output produced by invocation:**
+- Case 1 (completeness): ✅ PASS
+- Case 2 (downstream clarity): ✅ PASS
+
+✅ **Iteration record committed (hypothesis, change, result format):**
+- All 5 invocation cases documented with hypothesis/change/result
+- All 2 quality cases documented with results
+- 0 iterations needed (all passed first attempt)
+
+✅ **Skill file is committed in the location your tool expects for skills:**
+- Skill file: module-3/exercise-13/create-prd.md
+- Includes invocation metadata, role, task, context, constraints
+- Ready for deployment in Claude Code skill system
