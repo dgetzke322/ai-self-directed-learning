@@ -1,0 +1,30 @@
+commandLineOptions:
+  maxConcurrency: 20
+prompts:
+  - id: implement-iter3
+    raw: |
+      # Implement Story
+      ## Role: Senior Software Engineer
+      ## Context: Node.js + Express + Prisma + Zod
+      ## Constraints: Implement ES-5
+      {{input}}
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+tests:
+  - description: "Iteration 3: Load-Bearing Audit — Plan Detail Is Load-Bearing"
+    vars:
+      input: |
+        **Load-Bearing Test:** Run with VAGUE plan (no tech specifics) vs DETAILED plan
+
+        VAGUE plan: "Implement survey response endpoint with validation and error handling"
+        DETAILED plan: "POST /api/responses with Zod schema validation, Prisma transaction for atomicity, specific error codes"
+
+        Same story + acceptance criteria, different plan specificity
+        Hypothesis: DETAILED plan produces better implementation than VAGUE plan
+    assert: []

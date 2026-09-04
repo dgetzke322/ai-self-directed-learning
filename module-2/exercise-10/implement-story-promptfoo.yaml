@@ -1,0 +1,64 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: implement-story-iter1
+    raw: |
+      # Implement Story
+
+      ## Role
+      Senior Software Engineer who writes clean, tested, production-quality code.
+
+      ## Task
+      Given story with acceptance criteria and plan, implement with full code and tests.
+
+      ## Context
+      Stack: Node.js 20 + Express + PostgreSQL 16 + Prisma ORM + Zod validation
+      Pattern: Express middleware, Prisma transactions, Zod schema validation, Jest tests
+      Error handling: Explicit HTTP status codes at boundaries
+
+      ## Constraints
+      - All code TypeScript with full types (no `any`)
+      - Use Prisma ORM (not raw SQL), Zod validation (not manual checks), Express async middleware
+      - Test coverage: happy path + all error cases (AC3 validation 400, AC4 token 401)
+      - Database transaction for atomicity (token marked used + response stored together)
+      - Logging at key points (validation, token check, storage, errors)
+
+      ## Story & Plan
+
+      {{story_and_plan}}
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "Implement Story — ES-5 Engineer Submits Survey Response"
+    vars:
+      story_and_plan: |
+        **Story:** ES-5 Engineer Submits Survey Response
+
+        **Acceptance Criteria:**
+        1. POST /api/responses validates survey token
+        2. Accepts JSON: { survey_instance_id, survey_token, questions: [{question_id, answer_value}] }
+        3. 400 Bad Request if required fields missing/invalid
+        4. 401 Unauthorized "Survey link expired or invalid" if token invalid
+        5. Response stored WITHOUT survey_token/engineer identity (schema-level anonymity)
+        6. 200 OK { success: true, message: "Thank you for your response" }
+        7. Form loads <1.5s on 4G; completable in <3 minutes
+        8. Mobile-responsive (375px viewport, 44px+ touch targets)
+
+        **Technical Plan:**
+        - Endpoint: POST /api/responses with Express async middleware
+        - Validation: Zod schema for payload structure
+        - Token validation: Prisma findUnique surveyTokens (check expiration, used flag)
+        - Response storage: Prisma $transaction to atomically mark token used + create response
+        - Error responses: 400 for validation, 401 for token errors
+        - Tests: Happy path (valid token, 200), validation error (400), token error (401), anonymization check
+    assert: []

@@ -128,5 +128,32 @@ For Node.js/Express/PostgreSQL stack:
 
 ## Upstream Quality Reflection (Step 4)
 
-[To be filled after iterations with analysis of what upstream improvements would help]
+### What I Found When Trying to Improve Implement Story Quality
+
+**Adding Constraints to Implement Story Helped With:**
+- ✅ TypeScript strict types enforcement (Constraint: "no `any` types")
+- ✅ Specific library usage (Constraint: "use Prisma, not raw SQL")
+- ✅ Test coverage breadth (Constraint: "test happy path + error cases")
+
+**Adding Constraints to Implement Story Did NOT Help With:**
+- ❌ Atomicity/transaction patterns (generic constraint doesn't force Prisma.$transaction)
+- ❌ Specific error message content ("401 with message X" requires Plan detail)
+- ❌ API endpoint design (payload structure, response format specificity)
+
+**The Real Fix for Those Failures:**
+All three trace to **upstream Exercise 9 (Plan Story) quality**:
+1. **Atomicity:** Plan explicitly named `prisma.$transaction()` → Implementation used it
+2. **Error messages:** Plan specified "401 Unauthorized, 'Survey link expired or invalid'" → Implementation returned it
+3. **API design:** Plan showed exact endpoint structure and schemas → Implementation matched
+
+### Conclusion: Where Pipeline Leverage Actually Is
+
+**Hypothesis confirmed:** Implementation quality is constrained by upstream clarity, not downstream Constraints.
+
+- Strong upstream (PRD → Architecture → Plan): Implementation is clean, specific, production-ready
+- Weak upstream (vague PRD → generic Architecture → vague Plan): Implementation is generic (regardless of Constraints)
+
+**Key implication:** Adding Constraints to Implement Story has limited leverage if the Plan (Exercise 9) is vague. The real fix is improving Exercise 9 Plan quality, not tweaking Exercise 10 Constraints.
+
+**For SDLC pipelines:** Invest in PRD, Architecture, and Plan clarity. Implement and Review commands are downstream and their Constraints have less leverage than upstream quality improvements.
 

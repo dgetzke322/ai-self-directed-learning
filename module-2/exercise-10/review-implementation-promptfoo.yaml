@@ -1,0 +1,42 @@
+commandLineOptions:
+  maxConcurrency: 20
+prompts:
+  - id: review-iter1
+    raw: |
+      # Review Implementation
+      ## Role: Senior Software Engineer conducting code review
+      ## Context: Node.js + Express + Prisma + Zod
+      ## Constraints: Address ALL ACs explicitly, cite specific file:line, clear verdict
+      {{input}}
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+tests:
+  - description: "Review Implementation — Iter 1"
+    vars:
+      input: |
+        Story: ES-5 Engineer Submits Survey Response
+        Review the implementation from Implement Story
+        Assess: All 8 ACs addressed with pass/fail + specificity + test coverage
+    assert: []
+  - description: "Review Implementation — Iter 2: AC Specificity"
+    vars:
+      input: |
+        Story: ES-5 Engineer Submits Survey Response
+        Review focusing on: Does review cite specific code for each AC?
+        Hypothesis: Good AC clarity → specific review findings
+    assert: []
+  - description: "Review Implementation — Iter 3: Upstream AC Quality Impact"
+    vars:
+      input: |
+        Story: ES-5 Engineer Submits Survey Response
+        Load-bearing test: Review implementation against:
+        - CLEAR ACs: "401 Unauthorized with message 'Survey link expired'" 
+        - VAGUE ACs: "handle invalid tokens appropriately"
+        Hypothesis: Clear ACs → specific review; Vague ACs → generic review
+    assert: []

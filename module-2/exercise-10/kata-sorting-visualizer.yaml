@@ -1,0 +1,21 @@
+commandLineOptions:
+  maxConcurrency: 20
+prompts:
+  - id: implement-kata
+    raw: |
+      # Implement Story
+      Implement sorting visualization using generators for pauseable step-through
+      Critical: Each compare/swap is separate frame, not recursive exec → UI
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+tests:
+  - description: "Kata Implement: Sorting Visualizer with Generators"
+    vars:
+      story: "Sorting Algorithm Visualizer — Animation Engine (from Exercise 9 plan)"
+    assert: []

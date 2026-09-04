@@ -1,0 +1,27 @@
+commandLineOptions:
+  maxConcurrency: 20
+prompts:
+  - id: implement-iter2
+    raw: |
+      # Implement Story
+      ## Role: Senior Software Engineer writing production code
+      ## Context: Node.js + Express + Prisma + Zod, focus on plan quality driving implementation quality
+      ## Constraints: Follow plan exactly; if plan is vague, implementation will be vague
+      {{input}}
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+tests:
+  - description: "Iteration 2: Plan Quality Impact Test"
+    vars:
+      input: |
+        **Hypothesis:** Well-specified plan → better implementation; vague plan → poor implementation
+
+        Use Exercise 9 plan (detailed with Prisma methods, Zod schemas, transaction patterns)
+        Implement ES-5 with this plan as guide
+    assert: []
