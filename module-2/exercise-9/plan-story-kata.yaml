@@ -1,0 +1,64 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: plan-story-kata
+    raw: |
+      # Plan Story
+
+      ## Role
+      Senior Software Engineer producing actionable technical implementation plans.
+
+      ## Task
+      Given story with acceptance criteria, produce technical plan.
+
+      ## Context
+      Stack: Web app (React frontend + Node.js backend)
+      Algorithm visualization with real-time animation showing step-by-step execution
+
+      ## Constraints
+      - Specify how to make recursive/iterative algorithms pauseable
+      - Address synchronization between algorithm execution and UI updates
+      - Name specific animation patterns (requestAnimationFrame, generators, step-iteration)
+
+      ## Story
+      **Sorting Algorithm Visualizer — Animation Engine Story**
+
+      Implement the core animation system that visualizes sorting algorithm step-by-step.
+      For each comparison and swap operation, the visualization updates to show the current state.
+      The user can watch the algorithm execute in real-time or pause and step-through manually.
+
+      **Acceptance Criteria:**
+      1. Algorithm execution can be paused and resumed (not just speed control)
+      2. Each comparison and swap operation is a separate animation frame
+      3. Manual step-through available (next step / previous step buttons)
+      4. Animation runs at 60 FPS (requestAnimationFrame)
+      5. Sorted array state visualized in real-time (bar heights, colors)
+      6. Memory-efficient (can handle 100+ elements)
+      7. Works for multiple algorithms simultaneously (Bubble Sort, Merge Sort, Quick Sort in parallel)
+      8. No browser freeze or lag during visualization
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "Kata: Sorting Algorithm Visualizer — Step-Through Execution Model"
+    vars:
+      story_input: "Sorting Algorithm Visualizer — Animation Engine"
+      acceptance_criteria_input: |
+        1. Algorithm execution can be paused and resumed
+        2. Each comparison and swap is separate animation frame
+        3. Manual step-through: next/previous buttons
+        4. Animation at 60 FPS via requestAnimationFrame
+        5. Sorted array state visualized (bar heights, colors)
+        6. Memory-efficient for 100+ elements
+        7. Multiple algorithms simultaneously
+        8. No browser freeze during visualization
+    assert: []

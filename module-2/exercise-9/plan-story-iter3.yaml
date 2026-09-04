@@ -1,0 +1,61 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: plan-story-nodejs-detailed
+    raw: |
+      # Plan Story
+
+      ## Role
+      Senior Software Engineer producing actionable technical implementation plans.
+
+      ## Task
+      Given story with acceptance criteria, produce technical plan.
+
+      ## Context
+      Stack: Node.js 20 + Express.js 4 + PostgreSQL 16 + Prisma + Zod validation
+
+      ## Constraints
+      - Name specific libraries (Express, Prisma, Zod, UUID)
+      - Include error handling middleware pattern
+      - List specific Prisma methods (findUnique, create, transaction)
+      - Trace each acceptance criterion to implementation step
+      - Address async/await and transaction patterns for data consistency
+
+      ## Story
+      ES-5: Engineer Submits Survey Response
+
+      **AC:**
+      1. POST /api/responses validates survey token
+      2. Accepts JSON with survey_instance_id, survey_token, questions
+      3. 400 if validation fails
+      4. 401 if token invalid
+      5. Response stored anonymously (no FK to team_members)
+      6. 200 OK response
+      7. <1.5s load time on 4G
+      8. Mobile responsive
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "Iteration 3: Plan Story — Node.js/Express detailed with transaction patterns"
+    vars:
+      story_input: "ES-5: Engineer Submits Survey Response"
+      acceptance_criteria_input: |
+        1. POST /api/responses validates survey token
+        2. Accepts JSON: { survey_instance_id, survey_token, questions: [{question_id, answer_value}] }
+        3. 400 Bad Request if fields missing or invalid
+        4. 401 Unauthorized "Survey link expired or invalid" if token invalid
+        5. Response stored anonymously (schema level: no team_member FK)
+        6. 200 OK { success: true, message: "Thank you for your response" }
+        7. Form loads <1.5s on 4G
+        8. Mobile responsive (375px, 44px+ targets)
+    assert: []

@@ -1,0 +1,131 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: plan-story-nodejs
+    raw: |
+      # Plan Story
+
+      ## Role
+      You are a Senior Software Engineer who produces clear, actionable technical implementation plans.
+
+      ## Task
+      Given a User Story with Acceptance Criteria, produce a Technical Plan describing how to implement the story.
+
+      ## Context
+      Technology Stack: Node.js 20 LTS with Express.js 4.x, PostgreSQL 16 with Prisma ORM, Zod for validation, UUID for tokens.
+
+      Implementation environment: Backend API running on Node.js, database queries via Prisma, validation via Zod schema parsing, error handling via Express middleware pattern.
+
+      Deployment: Single Node.js process per container, PostgreSQL as external service, environment variables for secrets.
+
+      ## Constraints
+      Plan must be implementation-ready and specific to the Node.js/Express/PostgreSQL stack:
+      - Name specific libraries and patterns (Express middleware, Prisma methods, Zod schemas)
+      - Include error handling as Express middleware pattern
+      - Reference specific HTTP status codes and middleware flow
+      - Specify database query patterns using Prisma API
+      - Address async/await patterns inherent to Node.js
+
+      Each acceptance criterion must correspond to a specific implementation step in the plan.
+
+      ## Story
+
+      **Story:** Engineer Submits Survey Response (ES-5)
+
+      **Description:** An engineer who receives a survey link via email clicks it, answers survey questions, and submits responses anonymously.
+
+      **Acceptance Criteria:**
+      1. POST /api/responses endpoint validates survey token (checks valid, not expired, not yet used)
+      2. Endpoint accepts JSON: { survey_instance_id, survey_token, questions: [{question_id, answer_value}] }
+      3. Validation fails with 400 Bad Request if required fields missing or answer_value invalid
+      4. Invalid token returns 401 Unauthorized with message "Survey link expired or invalid"
+      5. Response stored WITHOUT reference to survey_token or engineer identity (anonymity enforced at schema level)
+      6. Returns 200 OK with { success: true, message: "Thank you for your response" }
+      7. Survey form loads in <1.5s on 4G; completable in <3 minutes total
+      8. Form mobile-responsive (375px viewport, 44px+ touch targets, no horizontal scroll)
+
+  - id: plan-story-python
+    raw: |
+      # Plan Story
+
+      ## Role
+      You are a Senior Software Engineer who produces clear, actionable technical implementation plans.
+
+      ## Task
+      Given a User Story with Acceptance Criteria, produce a Technical Plan describing how to implement the story.
+
+      ## Context
+      Technology Stack: Python 3.11 with FastAPI, SQLite database with SQLAlchemy ORM, Pydantic for validation, UUID for tokens.
+
+      Implementation environment: Backend API running on FastAPI with Uvicorn, database queries via SQLAlchemy, validation via Pydantic models, error handling via FastAPI exception handlers.
+
+      Deployment: Uvicorn server in container, SQLite database as file-based store, environment variables for secrets.
+
+      ## Constraints
+      Plan must be implementation-ready and specific to the Python/FastAPI/SQLite stack:
+      - Name specific libraries and patterns (FastAPI route decorators, Pydantic models, SQLAlchemy ORM methods)
+      - Include error handling as FastAPI HTTPException pattern
+      - Reference specific HTTP status codes and FastAPI dependency injection
+      - Specify database query patterns using SQLAlchemy ORM
+      - Address async/await patterns in FastAPI
+      - Note SQLite-specific limitations (limited FK support, database locking considerations)
+
+      Each acceptance criterion must correspond to a specific implementation step in the plan.
+
+      ## Story
+
+      **Story:** Engineer Submits Survey Response (ES-5)
+
+      **Description:** An engineer who receives a survey link via email clicks it, answers survey questions, and submits responses anonymously.
+
+      **Acceptance Criteria:**
+      1. POST /api/responses endpoint validates survey token (checks valid, not expired, not yet used)
+      2. Endpoint accepts JSON: { survey_instance_id, survey_token, questions: [{question_id, answer_value}] }
+      3. Validation fails with 400 Bad Request if required fields missing or answer_value invalid
+      4. Invalid token returns 401 Unauthorized with message "Survey link expired or invalid"
+      5. Response stored WITHOUT reference to survey_token or engineer identity (anonymity enforced at schema level)
+      6. Returns 200 OK with { success: true, message: "Thank you for your response" }
+      7. Survey form loads in <1.5s on 4G; completable in <3 minutes total
+      8. Form mobile-responsive (375px viewport, 44px+ touch targets, no horizontal scroll)
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "Iteration 1: Plan Story — Node.js/Express/PostgreSQL + Prisma"
+    vars:
+      story_input: "Engineer Submits Survey Response (ES-5)"
+      acceptance_criteria_input: |
+        1. POST /api/responses validates survey token (valid, not expired, not used)
+        2. Accepts JSON: { survey_instance_id, survey_token, questions: [{question_id, answer_value}] }
+        3. 400 Bad Request if required fields missing or answer_value invalid
+        4. 401 Unauthorized "Survey link expired or invalid" if token invalid
+        5. Response stored WITHOUT survey_token or engineer identity (schema-level anonymity)
+        6. 200 OK { success: true, message: "Thank you for your response" }
+        7. Form loads <1.5s on 4G, completable in <3 minutes
+        8. Mobile-responsive (375px, 44px+ targets, no horizontal scroll)
+    prompt: plan-story-nodejs
+    assert: []
+
+  - description: "Stack-Load-Bearing Test: Plan Story — Python/FastAPI/SQLite + SQLAlchemy"
+    vars:
+      story_input: "Engineer Submits Survey Response (ES-5)"
+      acceptance_criteria_input: |
+        1. POST /api/responses validates survey token (valid, not expired, not used)
+        2. Accepts JSON: { survey_instance_id, survey_token, questions: [{question_id, answer_value}] }
+        3. 400 Bad Request if required fields missing or answer_value invalid
+        4. 401 Unauthorized "Survey link expired or invalid" if token invalid
+        5. Response stored WITHOUT survey_token or engineer identity (schema-level anonymity)
+        6. 200 OK { success: true, message: "Thank you for your response" }
+        7. Form loads <1.5s on 4G, completable in <3 minutes
+        8. Mobile-responsive (375px, 44px+ targets, no horizontal scroll)
+    prompt: plan-story-python
+    assert: []
