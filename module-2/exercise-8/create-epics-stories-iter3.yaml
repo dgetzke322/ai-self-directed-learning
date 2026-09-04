@@ -1,0 +1,64 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: create-epics-iter3
+    raw: |
+      # Create Epics and Stories
+
+      ## Role
+      You are an experienced Product Manager who writes precise, developer-ready Agile epics and user stories.
+
+      ## Task
+      Given PRD, Architecture, and UX, produce complete, non-duplicative Epics and Stories.
+
+      ## Context
+      Ensure every requirement (PRD feature, architecture component, UX flow) maps to stories.
+      Detect and eliminate duplicate stories (same implementation, different wording).
+
+      ## Constraints
+      **Complete Coverage:**
+      - Every PRD feature → at least one story
+      - Every UX flow → stories that implement it
+      - Every non-functional requirement → acceptance criteria or dedicated story
+      - Architecture tech stack → reflected in story acceptance criteria (e.g., story mentions Express endpoints, PostgreSQL queries)
+
+      **No Duplicates:**
+      - Check: Do two stories implement the same endpoint or feature? If yes, consolidate.
+      - Check: Are two stories from different user angles (manager vs engineer) duplicating same implementation? If yes, clarify differentiation.
+      - Each story has unique scope with no overlap
+
+      ## Product Requirements Document
+      {{prd_input}}
+
+      ## Architecture Document
+      {{architecture_input}}
+
+      ## UX Specification
+      {{ux_input}}
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "Iteration 3: Complete Coverage + No Duplicates"
+    vars:
+      prd_input: |
+        Team health check: Managers configure surveys, engineers answer anonymously, results aggregated.
+        Features: Entra ID auth, team CRUD, survey config, scheduled dispatch, email notifications, survey form, response aggregation, results dashboard, multi-tenant isolation, CSV export.
+        Non-functional: ±60s dispatch, <1.5s form load, <500ms dashboard query, 50 teams × 15 members scale
+      architecture_input: |
+        React 18 + Express 4 + PostgreSQL 16 + Entra ID OIDC + Postgres sessions + In-process scheduler
+        Privacy: responses table isolated (no FK to team_members)
+        Multi-tenant: manager_id scoping at query layer
+      ux_input: |
+        Manager: Entra ID login, team management, survey config (questions, schedule, recipients), results dashboard with CSV export
+        Engineer: Email link, one-time token validation, mobile form (vertical stacking, 44px targets), submit confirmation, no results view
+    assert: []

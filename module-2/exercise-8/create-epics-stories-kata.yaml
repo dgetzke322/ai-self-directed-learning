@@ -1,0 +1,86 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: create-epics-stories-kata
+    raw: |
+      # Create Epics and Stories
+
+      ## Role
+      You are an experienced Product Manager who writes precise, developer-ready Agile epics and user stories.
+
+      ## Task
+      Given PRD, Architecture, and UX, produce Epics and Stories.
+
+      ## Context
+      Snake game with replay system. Key challenge: Ghost snake feature (replaying prior game while playing new game) has complex interaction model that must decompose into separate stories.
+
+      ## Constraints
+      - Story size: Each story focuses on one feature or technical concern
+      - Testable criteria: Measurable, error-explicit, verifiable
+      - Explicit dependencies: Which stories must complete first
+      - Ghost snake decomposition: Separate recording from playback; address grid sharing, visual distinction, live game interaction, no-prior-game fallback
+      - Complete coverage: All play modes, all replay features
+
+      ## Product Requirements Document
+      {{prd_input}}
+
+      ## Architecture Document
+      {{architecture_input}}
+
+      ## UX Specification
+      {{ux_input}}
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "Kata: Snake with Replay System — Ghost Snake Story Decomposition"
+    vars:
+      prd_input: |
+        # Snake with Replay System
+
+        ## Features
+        1. **Play Game:** Player controls snake on grid, eats food, grows, avoids walls/self
+        2. **Replay System:** After game ends, save game history. On next session, optionally replay prior game
+        3. **Ghost Snake:** While playing new game, optionally show ghost of prior game in background
+           - Ghost moves simultaneously with live snake
+           - Ghost is visually distinct (different color, transparency)
+           - Shares same grid as live game
+           - Does not affect live game (ghost food doesn't feed live snake, etc.)
+           - If no prior game exists, ghost is not shown
+
+        ## Non-Functional Requirements
+        - Smooth 60 FPS gameplay
+        - Ghost updates synchronously with live game
+        - Game state persists across sessions
+
+      architecture_input: |
+        Frontend: React with Canvas, Backend: Express + Node.js
+        Database: PostgreSQL to store game history
+        Game Loop: Client-side (60 FPS), server validates/stores game end state
+        Ghost Replay: Server provides prior game frame data, client renders overlay
+
+      ux_input: |
+        ## Main Game Flow
+        1. Start screen: New Game / Load Prior Game with Ghost
+        2. Game board: Live snake centered, ghost (if available) in background
+        3. Game over: Show score, prompt to save
+
+        ## Ghost Rendering
+        - Live snake: Green, opaque
+        - Ghost snake: Gray, 50% opacity
+        - Grid: Shared, no visual separation
+        - Ghost food: Not visible (ghost cannot be affected)
+
+        ## Edge Cases
+        - No prior game: Ghost button disabled or hidden
+        - Ghost game finished before live game: Ghost disappears, live continues
+    assert: []

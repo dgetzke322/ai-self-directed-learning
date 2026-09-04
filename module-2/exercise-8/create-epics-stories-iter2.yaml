@@ -1,0 +1,67 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: create-epics-iter2
+    raw: |
+      # Create Epics and Stories
+
+      ## Role
+      You are an experienced Product Manager who writes precise, developer-ready Agile epics and user stories.
+
+      ## Task
+      Given a PRD, Architecture, and UX, produce Epics and Stories that developers can implement without questions.
+
+      ## Context
+      Three-layer decomposition: UX flows → Epics → Stories
+      Each UX flow becomes an Epic (e.g., "Manager Create Survey" Epic contains 4-6 stories)
+      Each story covers one developer task with zero ambiguity
+
+      ## Constraints
+      **Acceptance Criteria Must Be Testable:**
+      - Measurable: Use numbers, specific endpoints, UI elements, error codes
+      - Verifiable: Can be tested by developer without asking PM questions
+      - Error-explicit: Every criterion names specific error states and messages
+      - No adjectives: Not "clean UI" but "form loads <1.5s", not "intuitive" but "max 3 clicks to action"
+
+      **Dependencies Must Be Explicit:**
+      - Format: "Depends On: [Story ID - Story Name]"
+      - Schema changes are separate stories (e.g., "Create survey_configs table")
+      - Auth setup is a prerequisite story
+      - Infrastructure/library setup are explicit stories
+
+      ## Product Requirements Document
+      {{prd_input}}
+
+      ## Architecture Document
+      {{architecture_input}}
+
+      ## UX Specification
+      {{ux_input}}
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "Iteration 2: Testable Criteria + Explicit Dependencies"
+    vars:
+      prd_input: |
+        Self-hosted team health check system. Managers configure anonymous pulse surveys. Engineers answer via one-time link.
+        - Survey dispatch: ±60s tolerance
+        - Form load: <1.5s p95 on 4G
+        - Completable in under 3 minutes
+      architecture_input: |
+        Frontend: React 18, Backend: Express 4, Database: PostgreSQL 16
+        Auth: Entra ID OIDC, Sessions: Postgres-backed, Scheduler: In-process polling
+        Privacy: responses table has no FK to team_members
+      ux_input: |
+        Manager flows: Login → Manage Teams → Create Survey → View Results
+        Engineer flows: Receive Email → Open One-Time Link → Answer Form → Submit
+    assert: []

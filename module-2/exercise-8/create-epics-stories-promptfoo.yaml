@@ -1,0 +1,139 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: create-epics-stories-iter1
+    raw: |
+      # Create Epics and Stories
+
+      ## Role
+      You are an experienced Product Manager who writes precise, developer-ready Agile epics and user stories.
+
+      ## Task
+      Given a PRD, Architecture Document, and UX Specification, produce a structured breakdown of Epics and User Stories that fully cover the described feature or system.
+
+      ## Context
+      You are decomposing a three-tier product specification:
+
+      **PRD (Source of Truth):** Features, user roles, non-functional requirements, business priorities
+      **Architecture:** Technical implementation decisions, component structure, tech stack specifics, dependencies
+      **UX Specification:** User interaction flows, component inventory, state handling, UI patterns
+
+      When interpreting these three inputs:
+      - **PRD is authoritative** for scope and features
+      - **Architecture informs technical decomposition** (if architecture names specific tech, stories should reference those tech choices)
+      - **UX flows are decomposition units** (each distinct UX flow = primary story candidate or epic)
+
+      **Conflict Resolution:** If PRD mentions feature X but Architecture doesn't detail it, assume it needs architectural thinking. If UX shows flow Z but PRD doesn't mention it, include it (UX may surface requirements not explicit in PRD).
+
+      **User Role Emphasis:** TeamPulse has two roles with distinct workflows: Managers (configuration) and Engineers (survey-taking). These should decompose into distinct epic/story tracks where appropriate.
+
+      ## Constraints
+      Epics and Stories must satisfy these requirements:
+
+      **1. Story Size & Scope:**
+      - Each story focuses on one user action (not multiple features bundled together)
+      - Each story should be completable in one sprint for a 3-person dev team (roughly 2-4 days of work)
+      - Stories should not require other stories to be "releasable" or meaningful (though dependencies may exist for sequencing)
+
+      **2. Testable Acceptance Criteria:**
+      - Every criterion uses measurable language (numbers, specific UI elements, endpoints, data states)
+      - No criterion uses adjectives alone ("fast", "intuitive", "clean") without quantified targets
+      - Error cases are explicit (what happens if X is invalid? what's the error message?)
+      - Each criterion can be tested by a developer without guessing the intent
+
+      **3. Explicit Dependencies:**
+      - Each story lists "Depends On: [Story IDs]" if prerequisites exist
+      - Database schema changes are explicit stories (e.g., "Create responses table with columns [X, Y, Z]")
+      - Infrastructure setup (Auth, environment config) are explicit stories if other stories need them
+      - No circular dependencies
+
+      **4. No Duplicate Stories:**
+      - Each story has unique implementation scope
+      - Similar stories from different angles (e.g., manager perspective vs engineer perspective) should be clearly differentiated, not duplicated
+      - If two stories implement the same endpoint/feature, consolidate or make differentiation explicit
+
+      **5. Complete Coverage:**
+      - Every feature from PRD is covered by at least one story
+      - Every UX flow from UX spec maps to stories
+      - All non-functional requirements (performance, scale, security) appear as acceptance criteria or dedicated stories
+      - Infrastructure/operational requirements (logging, monitoring, backups) are included
+
+      ## Product Requirements Document
+      {{prd_input}}
+
+      ## Architecture Document
+      {{architecture_input}}
+
+      ## UX Specification
+      {{ux_input}}
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "Iteration 1: TeamPulse Epics & Stories (Context + Constraints)"
+    vars:
+      prd_input: |
+        # TeamPulse PRD (Summary)
+        Self-hosted team health check system. Managers configure anonymous pulse surveys. Engineers answer via one-time link. Results aggregated into trend dashboard.
+
+        ## Key Features
+        Manager authentication (Entra ID SSO), team management, survey configuration, scheduled dispatch, email notifications, survey form, response aggregation, trend dashboard, multi-tenant isolation, CSV export.
+
+        ## Non-Functional Requirements
+        - Survey dispatch: ±60s tolerance, ±30s close tolerance
+        - Form load: <1.5s p95 on 4G
+        - Dashboard query: <500ms p95
+        - Scale: 50 teams × 15 members max
+        - Survey form must be mobile-accessible and completable in under 3 minutes
+
+      architecture_input: |
+        # TeamPulse Architecture (Summary)
+
+        ## Components
+        - **Frontend:** React 18, TypeScript, Vite, Tailwind CSS
+        - **Backend:** Express 4 on Node.js 20 LTS
+        - **Database:** PostgreSQL 16 with Prisma ORM
+        - **Auth:** Entra ID OIDC via openid-client
+        - **Sessions:** Postgres-backed express-session
+        - **Scheduler:** In-process Node.js polling
+
+        ## Data Model
+        managers, teams, team_members, survey_configs, survey_instances, survey_tokens, responses (no FK to team_members for privacy)
+
+        ## Key Patterns
+        - Schema-level privacy: responses table isolated
+        - Multi-tenant via manager_id scoping
+        - Drift-corrected scheduling with scheduler_log
+
+      ux_input: |
+        # TeamPulse UX (Summary)
+
+        ## Manager Flows
+        1. Login via Entra ID
+        2. Manage teams (CRUD team members)
+        3. Create survey (config questions, schedule, recipients)
+        4. View results (trend dashboard, CSV export)
+
+        ## Engineer Flows
+        1. Receive email with one-time survey link
+        2. Open form (mobile-responsive, no login required)
+        3. Answer questions (form validation, state persistence)
+        4. Submit (confirmation, no results visibility)
+
+        ## Components
+        - Login page (Entra ID button)
+        - Team management form
+        - Survey configuration builder
+        - Results dashboard with filters
+        - Mobile survey form
+        - Email notification template
+    assert: []
