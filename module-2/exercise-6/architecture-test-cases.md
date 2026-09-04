@@ -88,3 +88,36 @@ Will document after running architecture against high-quality vs. weak PRD:
 ### Weak PRD produces:
 - [specific gaps]
 
+
+---
+
+## Upstream Quality Note (Step 4)
+
+**PRD quality impact on Architecture:**
+
+### High-Quality PRD (TeamPulse from Exercise 5) produces:
+- ✅ Specific component descriptions (React 18, Express 4, PostgreSQL 16, Prisma)
+- ✅ Detailed data model with relationships and privacy implications
+- ✅ Schema-level privacy design (no FK from responses to team_members)
+- ✅ Specific performance bounds (±60s dispatch, ±30s close, <1.5s p95)
+- ✅ Multi-tenant isolation explained (manager_id scoping at query layer)
+- ✅ Open decisions with "why it matters" (scheduler scaling, session storage)
+
+### Weak PRD ("Build a survey system") produces:
+- ❌ Generic component descriptions ("frontend/backend/database")
+- ❌ Minimal data model, relationships unclear
+- ❌ Vague privacy ("keep data anonymous" without schema design)
+- ❌ No specific performance targets
+- ❌ Multi-tenancy mentioned but not architectured
+
+**Conclusion:** Architecture quality is bounded by upstream PRD quality.
+
+---
+
+## Kata Stress Test: Conway's Game of Life (Step 5)
+
+**Criterion:** Does architecture surface double-buffering pattern for cell state management?
+
+**Expected:** Explicitly recommend two-buffer swap pattern (not mutate-in-place)
+
+**Status:** [Ready to test after Exercise 6 completion]

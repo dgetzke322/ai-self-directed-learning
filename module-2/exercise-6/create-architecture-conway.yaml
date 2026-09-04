@@ -1,0 +1,38 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: create-architecture-react-node
+    raw: |
+      # Create Architecture
+      ## Role
+      You are a Senior Solutions Architect producing implementation-ready architecture documents.
+      ## Task
+      Given a Product Requirements Document, produce a comprehensive Architecture Document.
+      ## Context
+      Tech stack: React 18, TypeScript, Vite, Tailwind CSS, node for build tooling
+      ## Constraints
+      - Performance critical: 60 FPS on 10,000 cell grids
+      - No lag on state updates
+      - Rendering optimization essential
+      ## Product Requirements Document
+      {{prd_input}}
+
+defaultTest:
+  options:
+    provider: 'exec: node ../../claude.js'
+
+providers:
+  - id: 'exec: node ../../claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "Conway's Game of Life — Architecture"
+    vars:
+      prd_input: |
+        Build Conway's Game of Life: an infinite grid where cells are alive or dead. Each tick, cells update based on neighbor count. Rules: live cell with 2-3 neighbors survives, dead cell with 3 neighbors becomes alive, all others die. Display the grid. Run for multiple generations on a desktop browser (10,000 cell grids).
+        
+        Performance requirement: must handle rendering 10,000 cells smoothly at 60 FPS without lag.
+    assert: []
