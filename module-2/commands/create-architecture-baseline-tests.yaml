@@ -1,0 +1,228 @@
+commandLineOptions:
+  maxConcurrency: 20
+
+prompts:
+  - id: create-architecture-baseline
+    raw: |
+      # Create Architecture
+
+      ## Role
+      You are a Senior Solutions Architect who produces clear, implementation-ready architecture documents. You have deep expertise in system design, data modeling, API design, security architecture, and deployment patterns. Your architecture documents are known for being specific, actionable, and grounded in the stated technical context.
+
+      ## Task
+      Given a Product Requirements Document (PRD), produce a comprehensive Architecture Document describing the technical approach, design patterns, and system structure for implementing the described system.
+
+      ## Context
+      (No context provided — baseline observation)
+
+      ## Architecture Document Format Requirements
+
+      - **System Overview Diagram (Textual):** ASCII or prose description of major components and their relationships. Must name specific technologies/frameworks being used, not generic layer names.
+
+      - **Component Architecture:** For each major component (Frontend, Backend, Database, etc.), specify:
+        - Technology choices (framework, language, version if relevant)
+        - Key responsibilities and dependencies
+        - Communication protocol/API surface
+        - Data models or schemas this component owns
+
+      - **Data Architecture:**
+        - Database schema or data model (tables, collections, key relationships)
+        - Data flow between components
+        - Consistency model (strong/eventual, transactional boundaries)
+        - Any caching or data replication strategy
+
+      - **API Surface:**
+        - All major endpoints or interfaces between components
+        - Protocol and method (REST, GraphQL, RPC, message queue, etc.)
+        - Request/response patterns
+        - Authentication and authorization at the API level
+
+      - **Security Architecture:**
+        - Authentication flow (who logs in, how, what token/session mechanism)
+        - Authorization patterns (role-based, attribute-based, etc.)
+        - Secrets management
+        - Data protection in transit and at rest
+        - Which components are exposed vs. internal
+
+      - **Deployment & Operations:**
+        - Deployment topology (containerized, serverless, monolith, microservices)
+        - Environment strategy (dev, staging, prod)
+        - Scaling approach (vertical, horizontal, auto-scaling)
+        - Monitoring, logging, alerting hooks
+
+      - **Open Technical Decisions:**
+        - List specific architectural choices that are NOT YET DECIDED
+        - For each: why it matters, implications of each option, recommended path forward
+
+      - **Tradeoffs & Rationale:**
+        - Why this architecture (not alternatives)
+        - Known limitations and when they become problems
+        - Future scaling or pivot points
+
+      Product Requirements Document:
+      {{prd_input}}
+
+defaultTest:
+  options:
+    provider: 'exec: node ./claude.js'
+
+providers:
+  - id: 'exec: node ./claude.js'
+    label: haiku
+    config:
+      model: haiku
+
+tests:
+  - description: "TeamPulse Architecture (Baseline - No Context)"
+    vars:
+      prd_input: |
+        # TeamPulse — Product Requirements Document
+
+        ## 1. Overview
+
+        TeamPulse is a self-hosted team health check tool for engineering managers. Managers configure a recurring, anonymous pulse survey (5–7 questions, weekly or bi-weekly). Engineers get a notification with a one-time link, complete the survey in under 3 minutes, and responses roll up into a trend dashboard the manager can see. No individual response is ever attributable, including in admin/database views. The system runs as a single Docker deployment for a solo developer to build, operate, and extend.
+
+        ## 2. Goals
+
+        - Let a manager stand up a recurring pulse survey for their team in under 5 minutes.
+        - Guarantee response anonymity at the data-model level, not just in the UI.
+        - Give managers a trend view (not just a snapshot) so they can see direction, not just a score.
+        - Support multiple managers/teams on one deployment with hard tenant isolation.
+
+        ## 3. Out of Scope (V1)
+
+        - ML-based sentiment analysis or free-text NLP scoring.
+        - Cross-team comparison or org-wide rollups.
+        - HR system integration (Workday, BambooHR, etc.).
+        - Native mobile apps (mobile web only).
+        - Multi-region/HA deployment (single-instance local/VM Docker deployment only).
+        - Full Slack bot/app (OAuth install, per-user DM). V1 Slack support is a webhook-based reminder only.
+
+        ## 4. Personas
+
+        - **Manager**: Authenticates via Entra ID SSO. Creates a team, configures the question set and cadence, views the trend dashboard. Never sees who answered what.
+        - **Engineer**: No account required. Receives a link, answers questions once per survey cycle, done. Cannot log in or view a dashboard.
+
+        ## 5. Feature Requirements
+
+        ### 5.1 Manager Authentication (SSO)
+        **Role**: Required — gates all manager-facing routes.
+        **How/Where**: Backend implements OIDC authorization-code flow against Entra ID using `openid-client`. On successful callback, the backend upserts a row in `managers` keyed by the Entra `oid` claim and issues a server-side session (see 9, Security).
+        **Data**: `managers(id, entra_object_id, email, display_name, created_at)`. No password is ever stored.
+
+        ### 5.2 Team & Membership Management
+        **Role**: Required.
+        **How/Where**: React admin screen at `/teams/:id/members`. Manager adds members by email; each add creates a `team_members` row. Removing a member sets `status = 'removed'` (soft delete, not hard delete, so historical survey instances still make sense).
+        **Data**: `team_members(id, team_id, email, display_name, status, created_at)`.
+
+        ### 5.3 Survey Configuration
+        **Role**: Required.
+        **How/Where**: React form at `/teams/:id/config`. Manager selects 5-7 questions from a fixed question bank (V1 does not support free-text custom question authoring; that's a Phase 2 idea), sets frequency (`weekly` | `biweekly`), send day/time, and close-after duration.
+        **Data**: `survey_configs(id, team_id, frequency, send_day_of_week, send_time_utc, close_after_hours, timezone, active)`, `survey_config_questions(survey_config_id, question_id, sort_order)`.
+
+        ### 5.4 Scheduled Survey Dispatch
+        **Role**: Required — this is the drift-critical component; see Section 9.1.
+        **How/Where**: Backend `SchedulerService` (Node process, in-app, no separate worker container). On each tick it evaluates every active `survey_config` against its computed `next_fire_at`. When due, it creates a `survey_instances` row, generates a per-member `survey_tokens` row, and enqueues notification delivery (5.5/5.6).
+        **Data**: `survey_instances(id, team_id, survey_config_id, period_start, period_end, sent_at, closes_at, status)`, `survey_tokens(id, survey_instance_id, member_id_hash, used_at)`.
+
+        ### 5.5 Email Notification (primary channel)
+        **Role**: Required — default and only guaranteed delivery channel.
+        **How/Where**: Backend sends via `nodemailer` against a configured SMTP relay (env-configured; works with Office 365 SMTP or any relay). Email body contains a personalized single-use link: `https://{APP_HOST}/survey/{token}`.
+        **Data**: reads `team_members.email`, `survey_tokens.id` (raw token, not the stored hash).
+
+        ### 5.6 Slack Notification (optional, additive)
+        **Role**: Optional. Does not block survey dispatch or completion if unconfigured or if it fails.
+        **How/Where**: If a team has a `slack_webhook_url` configured, the backend POSTs a generic reminder message to that webhook when the survey opens. V1 deliberately does not do per-user Slack DMs, since that requires a full Slack app install with a bot token and mapped Slack user IDs, which is out of scope for a solo-dev V1.
+        **Data**: `teams.slack_webhook_url` (nullable).
+
+        ### 5.7 Survey Response Form
+        **Role**: Required — this is the core engineer-facing task.
+        **How/Where**: React route `/survey/:token`, single page, no pagination, 5-7 Likert-5 (1-5) questions rendered as segmented controls, mobile-first Tailwind layout. On load, calls `GET /api/survey/:token` to validate the token is unused and unexpired. On submit, calls `POST /api/survey/:token`.
+        **Data**: writes `responses(id, survey_instance_id, question_id, answer_value, submitted_at)` and marks `survey_tokens.used_at`. Critically, the `responses` table has **no column or foreign key referencing `team_members` or `survey_tokens`** — this is enforced at the schema level, not just in application logic, so a database dump cannot be joined back to an individual (see Section 11).
+
+        ### 5.8 Response Aggregation & Minimum Threshold Guard
+        **Role**: Required — this is what makes "anonymous" actually true in practice, not just at the row level.
+        **How/Where**: Backend aggregation query (`GET /api/teams/:teamId/trends`) computes mean and count per question per instance. If `response_count < MIN_RESPONSES_THRESHOLD` (default 4, env-configurable `MIN_RESPONSES_THRESHOLD`), the API returns `meets_threshold: false` and the dashboard renders "Not enough responses to display results (minimum 4)" instead of a score. This prevents a manager from inferring an individual's answer in a 2-3 person team.
+        **Data**: reads `responses`, no new columns.
+
+        ### 5.9 Trend Dashboard
+        **Role**: Required.
+        **How/Where**: React route `/teams/:id/dashboard`, Recharts line chart per question, x-axis = survey period, y-axis = mean score (1-5), with a delta badge comparing the latest period to the prior period.
+        **Data**: consumes the aggregate payload from 5.8. No raw response is ever sent to the frontend.
+
+        ### 5.10 Multi-Tenant Isolation
+        **Role**: Required, cross-cutting.
+        **How/Where**: Every backend query that touches `teams`, `team_members`, `survey_configs`, `survey_instances`, or `responses` is scoped by a `WHERE team.manager_id = :currentManagerId` check (enforced in a shared data-access layer, not left to each route handler to remember). A manager cannot enumerate or query another manager's team by guessing an ID.
+        **Data**: `teams.manager_id` is the tenancy boundary column.
+
+        ### 5.11 CSV Export of Aggregates (optional, additive)
+        **Role**: Optional. Does not block core survey creation, completion, or dashboard viewing.
+        **How/Where**: Button on the dashboard calls `GET /api/teams/:teamId/trends/export`, streaming a CSV with columns `period_start, period_end, question_text, avg_score, response_count`. Never includes per-response or per-member data.
+
+        ### 5.12 Survey Instance History (optional, additive)
+        **Role**: Optional.
+        **How/Where**: List view of past `survey_instances` per team with status and response count, for a manager who wants to audit send history rather than just the trend chart.
+
+        ## 6. Data Model (PostgreSQL 16)
+
+        ```
+        managers(id pk, entra_object_id unique, email, display_name, created_at)
+        teams(id pk, manager_id fk->managers, name, slack_webhook_url nullable, created_at)
+        team_members(id pk, team_id fk->teams, email, display_name, status enum[active,removed], created_at)
+        questions(id pk, text, response_type enum[likert_5], is_default bool, created_at)
+        survey_configs(id pk, team_id fk->teams unique, frequency enum[weekly,biweekly], send_day_of_week, send_time_utc, close_after_hours, timezone, active bool, next_fire_at, updated_at)
+        survey_config_questions(survey_config_id fk, question_id fk, sort_order, pk(survey_config_id, question_id))
+        survey_instances(id pk, team_id fk->teams, survey_config_id fk, period_start, period_end, sent_at, closes_at, status enum[scheduled,sent,closed])
+        survey_tokens(id pk, survey_instance_id fk, member_id_hash, used_at nullable, expires_at)
+        responses(id pk, survey_instance_id fk->survey_instances, question_id fk->questions, answer_value int, submitted_at)
+        scheduler_log(id pk, survey_config_id fk, expected_fire_time, actual_fire_time, drift_ms, action, created_at)
+        ```
+
+        ## 8. Technical Requirements
+
+        - **Frontend**: React 18 + TypeScript, Vite, TailwindCSS, React Query, React Hook Form + Zod, Recharts for the trend charts.
+        - **Backend**: Node.js 20 LTS, Express 4 + TypeScript, Zod for request validation at the API boundary, Prisma as ORM and migration tool.
+        - **Database**: PostgreSQL 16.
+        - **Sessions**: `express-session` backed by `connect-pg-simple` (Postgres-backed store). This avoids adding Redis as a second dependency, keeping the deployment footprint small.
+        - **Scheduler**: in-process polling service, no separate job-queue container (BullMQ/Redis rejected for V1 specifically to keep this a single-app-container deployment; revisit only if multi-instance scaling becomes a requirement).
+        - **Email**: `nodemailer` against a configured SMTP relay.
+        - **Auth library**: `openid-client` against Entra ID.
+        - **Containerization**: multi-stage `Dockerfile` (build stage compiles the React app and TypeScript backend; runtime stage is `node:20-alpine` serving the Express API and the built static frontend from one process). `docker-compose.yml` adds a Postgres 16 container with a named volume, so `docker compose up` is the full local run command.
+        - **Testing**: Vitest for backend unit tests (including scheduler drift logic), Playwright for an end-to-end smoke test of the survey submission flow.
+
+        ## 9. Non-Functional Requirements
+
+        ### 9.1 Timing & Drift (Scheduler)
+
+        This is the only time-critical subsystem in the product: survey dispatch and survey auto-close must happen when configured, not "eventually."
+
+        1. **Drift Tolerance Specification**: Scheduled survey dispatch must fire within **±60 seconds** of `next_fire_at`. Survey auto-close must occur within **±30 seconds** of `closes_at`.
+        2. **Drift Detection**: The scheduler does not use a single long-lived `setTimeout`/`setInterval` anchored to process start (this accumulates drift from event-loop lag, GC pauses, and container CPU throttling). Instead, a lightweight heartbeat (`setInterval`, 30-second period) wakes the scheduler, which reads the current wall-clock time (`Date.now()`) and compares it against each `survey_configs.next_fire_at` and `survey_instances.closes_at` stored in Postgres. Every tick records `expected_fire_time`, `actual_fire_time`, and `drift_ms` into `scheduler_log`.
+        3. **Drift Correction Trigger**: Correction activates whenever a tick finds `next_fire_at <= now()` (job is due or overdue) or detects `drift_ms` beyond the ±60s/±30s tolerance in step 1. It also activates if the current tick's wall-clock time is behind the previous tick's recorded time (host clock stepped backward), which is logged as a clock-skew event rather than firing a duplicate.
+        4. **Correction Mechanism**: `next_fire_at` is never computed as "last fire time + interval" in application memory. It is recomputed each time from absolute wall-clock date math (via `cron-parser` against the config's `send_day_of_week`/`send_time_utc`) and persisted back to `survey_configs.next_fire_at`. Because every computation is anchored to absolute time read from the database, missed ticks (e.g., container was down) do not accumulate drift or cause duplicate sends. On restart, the scheduler's first action is to reconcile all `active` configs against current time before resuming normal heartbeat.
+        5. **Drift Reporting**: Every tick, whether or not it fires a job, writes a `scheduler_log` row. Any `drift_ms` exceeding tolerance is logged at `WARN` level to stdout (visible via `docker logs`) and is queryable by the manager/operator at `GET /api/admin/scheduler-log`, since this is a solo-dev deployment with no dedicated ops tooling.
+
+        ### 9.2 Performance & Scale
+
+        - Survey form (`/survey/:token`) time-to-interactive under **1.5s p95** on a throttled 4G connection.
+        - Dashboard trend query (`GET /api/teams/:teamId/trends`) responds in under **500ms p95** for up to 24 historical instances.
+        - Deployment sized for up to **50 teams × 15 members** (750 members total) submitting concurrently within a survey window without degradation. Beyond that scale is explicitly out of scope for V1's single-instance architecture.
+        - No high-availability requirement in V1: single Docker Compose stack, no multi-region, no automatic failover. A restart during a survey window is acceptable given the ±60s dispatch tolerance and the reconciliation behavior in 9.1.4.
+
+        ### 9.3 Data Retention
+
+        - Survey responses are retained indefinitely by default.
+        - A manager can archive a team (soft delete via `teams.status`); archived team data purges after **90 days**, configurable via `RETENTION_DAYS` env var.
+
+        ## 10. Security Requirements
+
+        - **Authentication**: Manager authentication is OIDC-only via Entra ID; no local password is ever stored for managers, which removes password-storage risk from scope entirely (aligned with OWASP Top 10 A07: Identification and Authentication Failures).
+        - **Session cookies**: `HTTPOnly`, `Secure`, `SameSite=Lax`, signed session ID stored server-side in Postgres via `connect-pg-simple`. No sensitive data in the cookie itself.
+        - **CSRF**: double-submit cookie token required on all state-changing manager endpoints (`POST`/`PUT`/`DELETE` under `/api/teams/*`).
+        - **Survey tokens**: generated with `crypto.randomBytes(32)` (256 bits of entropy, exceeding NIST SP 800-63B's minimum 112-bit guidance for unguessable identifiers). Stored server-side only as a SHA-256 hash (`member_id_hash`); the raw token is never persisted in plaintext.
+        - **Rate limiting**: `/api/survey/:token` is rate-limited to **10 requests per minute per IP** (via `express-rate-limit`) to prevent token brute-forcing. OIDC callback failures are capped at **5 per 15 minutes per IP**, logged as a security event beyond that.
+        - **Access control**: OWASP Top 10 A01 (Broken Access Control) is addressed by the tenant-scoping data-access layer in 5.10; every team-scoped query requires `manager_id` ownership, enforced centrally rather than per-route.
+        - **Transport security**: TLS 1.2+ terminated at the reverse proxy in front of the container; HSTS header enforced. Local development may use a self-signed cert, but production deployment requires a valid cert.
+        - **Input validation**: all request bodies validated against Zod schemas at the API boundary before touching the database (mitigates injection and malformed-data risk; Prisma's parameterized queries additionally prevent SQL injection, OWASP Top 10 A03).
+        - **Framework alignment**: CIS Control 6.3 (require MFA for externally-exposed applications) is satisfied by delegating to Entra ID Conditional Access policies rather than reimplementing MFA. CIS Control 3.11 (encrypt sensitive data at rest) applies to the Postgres volume/disk. CIS Control 3.10 / OWASP A02 (Cryptographic Failures) is addressed by enforcing TLS in transit and never storing raw tokens at rest.
+    assert: []
