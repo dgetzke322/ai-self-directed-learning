@@ -1,0 +1,17 @@
+{
+  "sections_present": [
+    "Problem Statement",
+    "Solution",
+    "Key Requirements",
+    "Technical Context",
+    "V1 Scope & Boundaries",
+    "Non-Functional Requirements",
+    "Success Metrics",
+    "Assumptions",
+    "Open Questions & Decisions"
+  ],
+  "word_count": 1350,
+  "has_measurable_success_criteria": true,
+  "has_explicit_out_of_scope": true,
+  "has_assumptions_section": true
+}
