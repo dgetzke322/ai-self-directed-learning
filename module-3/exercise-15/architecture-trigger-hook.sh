@@ -6,12 +6,15 @@ WAIT_COUNT=0
 MAX_WAIT=20
 while [ $WAIT_COUNT -lt $MAX_WAIT ]; do
   if [ -f "$TRIGGER_FILE" ]; then
-    echo "[$TIMESTAMP] ARCH TRIGGER: Detected." | tee -a "$LOG_FILE"
+    echo "[$TIMESTAMP] READ: $TRIGGER_FILE (trigger detected)" | tee -a "$LOG_FILE"
     rm "$TRIGGER_FILE"
+    echo "[$TIMESTAMP] DELETE: $TRIGGER_FILE" | tee -a "$LOG_FILE"
     PRD_FILE=$(ls -t prd-*.md 2>/dev/null | head -1)
     if [ -n "$PRD_FILE" ]; then
-      echo "/create-architecture" > next-command.txt
-      echo "[$TIMESTAMP] ARCH TRIGGER: Ready for architecture step." | tee -a "$LOG_FILE"
+      echo "[$TIMESTAMP] FOUND: $PRD_FILE (latest PRD)" | tee -a "$LOG_FILE"
+      NEXT_CMD_FILE="next-command.txt"
+      echo "/create-architecture" > "$NEXT_CMD_FILE"
+      echo "[$TIMESTAMP] WRITE: $NEXT_CMD_FILE" | tee -a "$LOG_FILE"
       exit 0
     fi
   fi
