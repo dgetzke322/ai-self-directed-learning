@@ -158,3 +158,30 @@ This skill should NOT invoke when:
 **If uncertain:** Ask the user clarifying questions rather than invoking. Over-invocation (generating a PRD when not ready) is worse than under-invocation (making the user ask for it explicitly).
 
 **Key principle:** This skill exists to save time when the moment is right. Invoking it at the wrong time creates wasted artifacts and team friction. Precision in invocation is more important than convenience.
+
+---
+
+## Mandatory: Sentinel File Output (Exercise 14)
+
+**After producing the PRD, you MUST write a file called `prd-sentinel.json` in the same directory as this skill file.**
+
+The sentinel file is a structural checkpoint. Write it with exactly this JSON structure:
+
+```json
+{
+  "sections_present": ["<list of section names from the PRD>"],
+  "word_count": <approximate word count of PRD body>,
+  "has_measurable_success_criteria": <true if PRD contains at least one measurable success criterion with a specific numeric or behavioral target; false otherwise>,
+  "has_explicit_out_of_scope": <true if PRD contains an explicit out-of-scope section; false otherwise>,
+  "has_assumptions_section": <true if PRD explicitly lists assumptions; false otherwise>
+}
+```
+
+**Required field values:**
+- `sections_present` must be an array of the actual section names that appear in your PRD output
+- `word_count` should be your best estimate of words in the PRD body (excluding title and section headers)
+- `has_measurable_success_criteria` must be `true` — PRD must contain at least one success metric with a specific, testable target
+- `has_explicit_out_of_scope` must be `true` — PRD must have a dedicated out-of-scope section with explicit boundaries
+- `has_assumptions_section` should be `true` if you include an Assumptions section; `false` is acceptable
+
+**This is not optional.** The sentinel file enables deterministic validation of PRD structure and is required after every PRD generation.
