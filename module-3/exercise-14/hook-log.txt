@@ -16,3 +16,5 @@
 [2026-09-08T15:49:34Z] Tool: Edit, File: /Users/dgetzke/.claude/skills/create-prd/SKILL.md
 [2026-09-08T15:49:50Z] Tool: Edit, File: /Users/dgetzke/.claude/skills/create-prd/SKILL.md
 [2026-09-08T15:58:44Z] Tool: Write, File: test-file.md
+[2026-09-08T16:03:22Z] Tool: Write, File: /Users/dgetzke/docker/git/ai-self-directed-learning/module-3/exercise-14/prd-team-task-tracker.md
+[2026-09-08T16:03:33Z] Tool: Write, File: /Users/dgetzke/docker/git/ai-self-directed-learning/module-3/exercise-14/prd-sentinel.json
