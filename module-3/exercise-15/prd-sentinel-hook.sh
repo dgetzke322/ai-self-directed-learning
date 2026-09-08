@@ -1,4 +1,38 @@
 #!/bin/bash
+#
+# prd-sentinel-hook.sh — Validates PRD sentinel file for governed flow
+#
+# TRIGGER EVENT: PostToolUse Write event on any file write in the working directory
+#   (configured in ~/.claude/settings.json hooks.PostToolUse)
+#
+# PURPOSE: Validate prd-sentinel.json against the governance schema after PRD generation
+#
+# DECISION LOGIC:
+#   1. Check if prd-sentinel.json file exists
+#      - If missing: SKIP (sentinel not yet written by skill, wait for next write)
+#      - If present: VALIDATE
+#
+#   2. When present, validate against schema:
+#      - All 9 PRD sections must be present (checked via keyword grep)
+#      - Word count must be in range (~500-3000)
+#      - has_measurable_success_criteria must be true
+#      - has_explicit_out_of_scope must be true
+#
+# SUCCESS ACTION:
+#   - Log validation passed with section count and word count
+#   - Write proceed-to-architecture.flag (timestamp)
+#   - Exit with code 0 (success)
+#   - Triggers architecture-trigger-hook to detect flag and queue next step
+#
+# FAILURE ACTION:
+#   - Log validation failed with count of issues found
+#   - Do NOT write proceed-to-architecture.flag
+#   - Exit with code 1 (failure)
+#   - Governance gate blocks progression until PRD is fixed
+#
+# SCHEMA REFERENCE: See create-prd-sentinel-schema.md for full sentinel schema
+#
+
 SENTINEL_FILE="prd-sentinel.json"
 LOG_FILE="hook-log.txt"
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
