@@ -18,3 +18,20 @@
 [2026-09-08T15:58:44Z] Tool: Write, File: test-file.md
 [2026-09-08T16:03:22Z] Tool: Write, File: /Users/dgetzke/docker/git/ai-self-directed-learning/module-3/exercise-14/prd-team-task-tracker.md
 [2026-09-08T16:03:33Z] Tool: Write, File: /Users/dgetzke/docker/git/ai-self-directed-learning/module-3/exercise-14/prd-sentinel.json
+[2026-09-08T17:42:42Z] FAIL: Missing required section: out_of_scope
+[2026-09-08T17:42:42Z] FAIL: PRD sentinel validation failed (1 issues)
+[2026-09-08T17:43:34Z] Tool: Edit, File: /Users/dgetzke/docker/git/ai-self-directed-learning/module-3/exercise-14/prd-sentinel-hook.sh
+[2026-09-08T17:43:43Z] PASS: PRD sentinel validation passed. Sections: overview,solution,requirements,technical_context,scope_and_boundaries,non_functional_requirements,success_criteria,assumptions,open_questions,next_steps. Word count: 1847.
+[2026-09-08T17:47:28Z] Tool: Write, File: /Users/dgetzke/docker/git/ai-self-directed-learning/module-3/exercise-14/prd-simple-task-list.md
+[2026-09-08T17:48:10Z] Tool: Write, File: /Users/dgetzke/docker/git/ai-self-directed-learning/module-3/exercise-14/prd-sentinel.json
+[2026-09-08T17:49:26Z] FAIL: Missing required section: overview
+[2026-09-08T17:49:26Z] FAIL: Missing required section: requirements
+[2026-09-08T17:49:26Z] FAIL: Missing required section: success_criteria
+[2026-09-08T17:49:26Z] FAIL: Missing scope section (out_of_scope or scope_and_boundaries)
+[2026-09-08T17:49:26Z] WARN: Word count (281) outside recommended range (500-3000)
+[2026-09-08T17:49:26Z] FAIL: PRD missing measurable success criteria
+[2026-09-08T17:49:26Z] FAIL: PRD missing explicit out-of-scope section
+[2026-09-08T17:49:26Z] WARN: PRD missing assumptions section (recommended but not required)
+[2026-09-08T17:49:26Z] FAIL: PRD sentinel validation failed (6 issues)
+[2026-09-08T17:50:12Z] FAIL: prd-sentinel.json not found
+[2026-09-08T17:51:13Z] Tool: Write, File: /Users/dgetzke/docker/git/ai-self-directed-learning/module-3/exercise-14/hook-test-notes.md
