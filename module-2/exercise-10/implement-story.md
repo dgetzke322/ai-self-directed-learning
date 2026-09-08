@@ -1,3 +1,12 @@
+<!--
+COMMAND: Implement Story (Exercise 10)
+WHEN TO USE: Generate code implementation for a planned story following the approved plan
+INPUT FORMAT: Story Plan (from plan-story command, with tasks and approach documented)
+TEST FILE: module-2/exercise-10/implement-story-tests.md
+PROMPTFOO: module-2/exercise-10/implement-story-promptfoo.yaml
+CONTEXT: Exercise 10 implementation command with iterative refinement and Model Ladder testing.
+-->
+
 # Implement Story
 
 ## Role

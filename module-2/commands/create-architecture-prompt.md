@@ -1,3 +1,12 @@
+<!--
+COMMAND: Create Architecture Document (Baseline)
+WHEN TO USE: After PRD approval, design the technical architecture for the system
+INPUT FORMAT: Product Requirements Document (markdown file)
+TEST FILE: module-2/commands/create-architecture-baseline-tests.yaml
+PROMPTFOO: (baseline reference - model ladder testing)
+CONTEXT: This is the baseline architecture command tested against both Sonnet and Haiku to establish Model Ladder baseline.
+-->
+
 # Create Architecture
 
 ## Role

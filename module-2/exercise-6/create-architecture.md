@@ -1,3 +1,12 @@
+<!--
+COMMAND: Create Architecture Document (Exercise 6)
+WHEN TO USE: Design system architecture from PRD using Conway's Law principles
+INPUT FORMAT: Product Requirements Document (markdown file)
+TEST FILE: module-2/exercise-6/create-architecture-tests.md
+PROMPTFOO: module-2/exercise-6/create-architecture-promptfoo.yaml
+CONTEXT: Exercise 6 specialized for team structure analysis with Conway's Law applied to architecture decisions.
+-->
+
 # Create Architecture
 
 ## Role

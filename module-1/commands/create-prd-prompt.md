@@ -1,3 +1,12 @@
+<!--
+COMMAND: Create Product Requirements Document (Pomodoro Timer)
+WHEN TO USE: Convert a product description/vision into a formal PRD for solo developer
+INPUT FORMAT: Product description/vision (markdown or text describing features, requirements, constraints)
+TEST FILE: module-1/commands/create-prd-pomodoro-tests.yaml
+PROMPTFOO: module-1/commands/create-prd-pomodoro-tests.yaml
+CONTEXT: This command is specialized for the Pomodoro timer domain with emphasis on timing, drift tolerance, and interval accuracy.
+-->
+
 # Create PRD
 
 ## Role

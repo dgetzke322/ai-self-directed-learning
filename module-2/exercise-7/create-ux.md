@@ -1,3 +1,12 @@
+<!--
+COMMAND: Create UX Design (Exercise 7)
+WHEN TO USE: Design user interface and user experience based on architecture and PRD
+INPUT FORMAT: Product Requirements Document and Architecture Document (markdown files)
+TEST FILE: module-2/exercise-7/create-ux-tests.md
+PROMPTFOO: module-2/exercise-7/create-ux-promptfoo.yaml
+CONTEXT: Exercise 7 UX command with iteration tracking and Model Ladder testing (Sonnet vs Haiku).
+-->
+
 # Create UX
 
 ## Role

@@ -1,3 +1,12 @@
+<!--
+COMMAND: Create Epics and Stories (Exercise 8)
+WHEN TO USE: Break down architecture into epics and user stories for implementation planning
+INPUT FORMAT: Product Requirements Document and Architecture Document (markdown files)
+TEST FILE: module-2/exercise-8/create-epics-stories-tests.md
+PROMPTFOO: module-2/exercise-8/create-epics-stories-promptfoo.yaml
+CONTEXT: Exercise 8 decomposition command with acceptance criteria and Model Ladder testing.
+-->
+
 # Create Epics and Stories
 
 ## Role

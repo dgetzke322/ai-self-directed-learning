@@ -1,3 +1,12 @@
+<!--
+COMMAND: Review Implementation (Exercise 10)
+WHEN TO USE: Code review of implementation against the plan, identifying gaps and issues
+INPUT FORMAT: Implementation Code (file or description) and Story Plan (acceptance criteria)
+TEST FILE: module-2/exercise-10/review-implementation-tests.md
+PROMPTFOO: module-2/exercise-10/review-implementation-promptfoo.yaml
+CONTEXT: Exercise 10 review command for quality gates and Model Ladder testing.
+-->
+
 # Review Implementation
 
 ## Role
