@@ -1,13 +1,12 @@
 #!/bin/bash
 # hook-log.sh - Hello World Hook for Exercise 14, Step 1
-# Logs every file write to hook-log.txt
+# Logs every file write to hook-log.txt in the current directory
 #
 # Called by Claude Code's PostToolUse hook with JSON on stdin
 
-LOG_FILE="module-3/exercise-14/hook-log.txt"
+LOG_FILE="hook-log.txt"
+DEBUG_LOG="hook-debug.log"
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-
-mkdir -p "$(dirname "$LOG_FILE")" "$(dirname "$DEBUG_LOG")"
 
 # Read JSON from stdin
 HOOK_INPUT=$(cat)
